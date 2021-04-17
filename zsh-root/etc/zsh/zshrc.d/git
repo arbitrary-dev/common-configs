@@ -44,6 +44,28 @@ alias gbi="git bisect"
 alias grm="git rm --cached"
 alias gsub="git submodule"
 
+gcu() {
+  local user
+  local email
+
+  creds=($(git-creds "$1" 2> /dev/null))
+  if (( $#creds )); then
+    user="${creds[1]}"
+    email="${creds[2]}"
+  else
+    user="$1"
+    email="$2"
+  fi
+
+  [ -z "$user" ] && echo "Specify user!" && return 1
+
+  if git config user.name "$user" \
+     && git config user.email "$email"
+  then
+     echo "Configured user: $user"
+  fi
+}
+
 gls() { git ls-tree --full-tree -r HEAD | cut -f2; }
 alias glsr="git ls-remote --heads origin | cut -d/  -f3-"
 
