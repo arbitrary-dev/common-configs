@@ -1,0 +1,89 @@
+# Enables custom Vim mappings on <C-q> & <C-s>
+stty -ixon
+
+# Fixes newline issues in terminal with %'s
+stty sane
+
+# The following lines were added by compinstall
+
+zstyle ':completion:*' completer _complete _ignored
+zstyle ':completion:*' matcher-list '' '' '' 'r:|[._-]=** r:|=**'
+
+autoload -Uz compinit
+compinit
+# End of lines added by compinstall
+# Lines configured by zsh-newuser-install
+
+# Should be before all other bindkey's
+bindkey -v
+
+HISTFILE=~/.zhistory
+HISTSIZE=2000
+SAVEHIST=$HISTSIZE
+setopt appendhistory histignorespace histignorealldups
+bindkey "$key[Up]" history-beginning-search-backward
+bindkey "$key[Down]" history-beginning-search-forward
+
+setopt autocd
+unsetopt nomatch
+# End of lines configured by zsh-newuser-install
+
+export PS1='%1~ %(!.#.$)%b%f '
+export EDITOR="vim"
+export LESS="-iSXFR"
+
+alias vr="$EDITOR ~/.zshrc"
+alias sr='. /etc/profile;. /etc/zsh/zshrc;. ~/.zshrc'
+alias svr="sudo $EDITOR /etc/zsh/zshrc.d/misc"
+
+alias -s log="$EDITOR"
+alias -s conf="$EDITOR"
+
+alias xc="xclip -selection clipboard"
+alias xp="xclip -selection clipboard -o"
+
+alias ecurr="watch -ctn 30 genlop -c"
+alias ehist="genlop -it"
+alias bfs-usage="btrfs filesystem usage"
+alias bfs-du="btrfs fi du"
+alias bfs-df="btrfs fi df"
+alias bfs-comp="sudo compsize"
+alias bfs-defrag="btrfs filesystem defragment -r -clzo"
+
+alias cpv="rsync -rh --info=progress2"
+alias mvv="rsync -rh --info=progress2 --remove-source-files"
+
+alias rn=perl-rename
+alias xs="xargs -I{}"
+alias ptop="sudo powertop"
+alias psw=powermode-switch
+alias df="df -h"
+alias du="du -h"
+
+bc() { command bc -l <<< "$*"; }
+dc() { date --date "$*"; }
+
+alias epoch-seconds="date +%s"
+
+backup() {
+  local date=`date +%Y-%m-%d`
+  local name=`basename ${*[-1]}`
+  7z a -mhe=on -mhc=on -m0=lzma2 -mx=9 -ms=128f512m -v4g -p \
+    $name-$date.7z $*
+}
+
+my-sdiff() {
+  local S
+  for i in "$@"; do
+    [ "$i" = -s ] && S=1
+  done
+  sdiff -tw `tput cols` $@ \
+  | ([ $S ] && cat || sed -Ee "s/^(.+ \| .*|.+<| +> .*)$/${esc}[32m\1${esc}[0m/") \
+  | less
+}
+
+ccache-enable() {
+  export PATH="/usr/lib/ccache/bin${PATH:+:}$PATH"
+  export CCACHE_DIR="/home/.ccache"
+  echo "ccache enabled!"
+}
