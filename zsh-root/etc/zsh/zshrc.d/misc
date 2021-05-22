@@ -1,3 +1,5 @@
+export PS1='%1~ %(!.#.$)%b%f '
+
 # Enables custom Vim mappings on <C-q> & <C-s>
 stty -ixon
 
