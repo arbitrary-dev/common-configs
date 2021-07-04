@@ -5,14 +5,16 @@ stty -ixon
 stty sane
 
 # The following lines were added by compinstall
-
 zstyle ':completion:*' completer _complete _ignored
-zstyle ':completion:*' matcher-list '' '' '' 'r:|[._-]=** r:|=**'
+zstyle ':completion:*' matcher-list '' \
+  'm:{[:lower:][:upper:]}={[:upper:][:lower:]}' \
+  'r:|[._-]=** r:|=**'
 
 autoload -Uz compinit
-compinit
+compinit -u
 # End of lines added by compinstall
 # Lines configured by zsh-newuser-install
+zstyle ':completion::complete:*' use-cache 1
 
 # Should be before all other bindkey's
 bindkey -v
@@ -25,10 +27,9 @@ bindkey "$key[Up]" history-beginning-search-backward
 bindkey "$key[Down]" history-beginning-search-forward
 
 setopt autocd
-unsetopt nomatch
+unsetopt beep nomatch
 # End of lines configured by zsh-newuser-install
 
-export PS1='%1~ %(!.#.$)%b%f '
 export EDITOR="vim"
 export LESS="-iSXFR"
 
