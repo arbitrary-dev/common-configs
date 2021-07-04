@@ -16,5 +16,6 @@ echo "Done!"
 
 echo
 echo "Stowing Vim..."
+stow --target $HOME/.vim vim-user
 sudo stow --target /etc/vim vim-root
 echo "Done!"
