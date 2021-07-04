@@ -17,17 +17,17 @@ export PATH=$PATH:~/.jenv/bin
 # TODO eval "$(jenv init -)"
 
 export MY_DOCS=~/Documents
-alias todo='vim $MY_DOCS/_misc/todo'
-alias notes='vim $MY_DOCS/_misc/notes'
+alias todo="$EDITOR $MY_DOCS/_misc/todo"
+alias notes="$EDITOR $MY_DOCS/_misc/notes.md"
 
-alias -s txt=vim
-alias -s md=vim
-alias -s scala=vim
-alias -s hs=vim
-alias -s js=vim
-alias -s ts=vim
-alias -s yaml=vim
-alias -s cpp=vim
+alias -s txt="$EDITOR"
+alias -s md="$EDITOR"
+alias -s scala="$EDITOR"
+alias -s hs="$EDITOR"
+alias -s js="$EDITOR"
+alias -s ts="$EDITOR"
+alias -s yaml="$EDITOR"
+alias -s cpp="$EDITOR"
 
 alias -s mkv=mpv
 alias -s mp4=mpv
@@ -70,7 +70,6 @@ yts() {
 
 alias m=memo
 alias me="memo --edit"
-alias sf=screenfetch
 alias xb=xbacklight
 alias bat="upower -i /org/freedesktop/UPower/devices/battery_BAT0 | grep 'time to' | sed -Ee 's/  +/ /g' -e 's/^ //'"
 alias feh="feh --auto-rotate --image-bg black -Z -."
@@ -84,8 +83,8 @@ alias ssha='eval "`ssh-agent -s`"'
 alias sshk='ssh-agent -k'
 
 vi() {
-  if (( $# == 1 )); then
-    arr=(${(s/:/)@})
+  arr=(${(s/:/)@})
+  if (( $# == 1 && $#arr == 2 )); then
     vim +${arr[-1]} -u /etc/vim/vimrc "${arr[1,-2]}"
   else
     vim -u /etc/vim/vimrc "$@"
@@ -348,7 +347,11 @@ umnt() {
   [[ "$from" != /mnt/* ]] && from="/mnt/$from"
   mount | grep -q "$from" && [[ "$PWD" = "$from"* ]] && cd ~
   local dev=`mount | grep $from | cut -d\  -f1 | sed 's/[0-9]\+$//'`
-  sync
+
+  printf "Syncing $from ... "
+  sync "$from"
+  echo "OK"
+
   sudo sh -c "umount '$from' && rm -d '$from' && echo '$from unmounted'"
   if (( ! `mount | grep -c $dev` )) && whence -p eject-device >/dev/null; then
     read -k "a?No more mounts for $dev, eject it? "
@@ -506,7 +509,7 @@ rec-screen() {
 
   # TODO utilize xrectsel
   ffmpeg -y -f x11grab -draw_mouse 0 -show_region 1 -video_size 800x600 \
-    -framerate 25 -i :0.0+1000,400 \
+    -framerate 25 -i :0.0+1110,470 \
     -f pulse -i $adev -ac 1 \
     $TMPDIR/output.mkv
 

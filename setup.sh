@@ -1,5 +1,10 @@
 #!/bin/sh
 
+if ! which stow >/dev/null 2>&1; then
+  echo "Stow not found! Please install it."
+  exit 1
+fi
+
 echo "Stowing Zsh..."
 stow --target $HOME zsh-user
 sudo stow --target / zsh-root
@@ -9,6 +14,7 @@ if ! grep -q zshrc.d /etc/zsh/zshrc; then
 fi
 echo "Done!"
 
-printf "\nStowing Vim...\n"
+echo
+echo "Stowing Vim..."
 sudo stow --target /etc/vim vim-root
 echo "Done!"

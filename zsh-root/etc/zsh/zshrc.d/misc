@@ -36,7 +36,7 @@ alias vr="$EDITOR ~/.zshrc"
 alias sr='. /etc/profile;. /etc/zsh/zshrc;. ~/.zshrc'
 alias svr="sudo $EDITOR /etc/zsh/zshrc.d/misc"
 
-alias -s log="$EDITOR"
+alias -s log="less"
 alias -s conf="$EDITOR"
 
 alias xc="xclip -selection clipboard"
@@ -44,6 +44,7 @@ alias xp="xclip -selection clipboard -o"
 
 alias ecurr="watch -ctn 30 genlop -c"
 alias ehist="genlop -it"
+
 alias bfs-usage="btrfs filesystem usage"
 alias bfs-du="btrfs fi du"
 alias bfs-df="btrfs fi df"
@@ -61,7 +62,7 @@ alias df="df -h"
 alias du="du -h"
 
 bc() { command bc -l <<< "$*"; }
-dc() { date --date "$*"; }
+dc() { date --date "$@"; }
 
 alias epoch-seconds="date +%s"
 
