@@ -5,6 +5,8 @@ export NUMCPUSPLUSONE=$(( NUMCPUS + 1 ))
 export MAKEOPTS="-j${NUMCPUSPLUSONE} -l${NUMCPUS}"
 export EMERGE_DEFAULT_OPTS="--jobs=${NUMCPUSPLUSONE} --load-average=${NUMCPUS}"
 
+alias sws="swapon --show=name,size,used"
+
 # Usage: p1 <patchfile
 alias p1="patch -p1"
 
@@ -13,35 +15,28 @@ alias regen-manifest="repoman manifest"
 alias mc="make menuconfig"
 alias mo="make oldconfig"
 
-bkernel() {
-  local flags=()
-  if read -q "?Rebuild external modules? "; then
-    flags+="--rebuild-external-modules"
-  fi
-  echo
-
-  ccache-enable
-  TMPDIR= \
-  KERNEL_DIR=/tmp/buildkernel \
-  buildkernel "${flags[@]}"
-}
-
 emrg() {
   if (( $# )); then
-    emerge "${@}"
+    emerge "$@"
   else
-    emerge -avuDN --keep-going @world
+    emerge -avuDN --quiet-build --keep-going @world
   fi
 }
 
 alias emrg-c="FEATURES=ccache emrg"
+alias emrg-d="FEATURES=distcc MAKEOPTS='-j25 -l2' emrg"
+alias emrg-h="PORTAGE_TMPDIR=/home/.portage-tmpdir emrg"
+alias emrg-hc="PORTAGE_TMPDIR=/home/.portage-tmpdir emrg-c"
+alias emrg-hd="PORTAGE_TMPDIR=/home/.portage-tmpdir emrg-d"
+
 emrg-preserved-rebuild() { emerge ${1:--a} @preserved-rebuild; }
 alias ecurr="watch -ctn 30 genlop -c"
 alias ehist="genlop -it"
-alias ecln="emerge --ask --depclean"
-alias eclnd="eclean-dist --deep --fetch-restricted"
 alias eadd="emerge --noreplace"
 alias emask="qlist -IC"
+
+alias ecln="emerge --ask --depclean"
+alias eclnd="eclean-dist --deep --fetch-restricted"
 
 esync() {
   ecln || return 1
@@ -49,19 +44,23 @@ esync() {
   local sync_log="/tmp/.emaint.log"
 
   printf "\nSyncing... "
-  if emaint sync -a > $sync_log; then
+  if emaint sync -a &> $sync_log; then
     echo "done"
   else
     echo "FAILED $sync_log"
     return 1
   fi
 
-  emerge -avuDN @world
+  emerge -avuDN --quiet-build --keep-going @world
 }
 
 crossdev-netbook() {
   crossdev --target i686-pc-linux-gnu \
     --binutils '=2.34*' --gcc '=9.3*' --kernel '=5.4*' --libc '=2.32*'
+}
+
+xb() {
+  echo $((2**$1)) > /sys/class/backlight/intel_backlight/brightness
 }
 
 alias docker-clean="docker system prune --volumes"
@@ -75,6 +74,12 @@ resize-tmp() {
   if mount -o remount,size=${size} /tmp; then
     echo "Size of /tmp is set to: $size"
   fi
+}
+
+upd-time() {
+  echo "Before: " $(date) && \
+  rc-service ntp-client start && \
+  echo "After: " $(date)
 }
 
 efi-sign() {
@@ -95,3 +100,5 @@ efi-sign() {
     echo "Signed: $out"
   fi
 }
+
+[ -f ~/.zprofile ] && source ~/.zprofile

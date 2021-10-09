@@ -1,0 +1,29 @@
+alias -s mp4=mpv
+alias -s MPG=mpv
+alias -s avi=mpv
+alias -s mkv=mpv
+alias -s flv=mpv
+alias -s webm="mpv -loop-playlist=inf"
+
+alias -s txt=vim
+alias -s md=vim
+alias -s ly=vim
+alias -s conf=vim
+alias -s scala=vim
+alias -s hs=vim
+alias -s js=vim
+alias -s ts=vim
+alias -s yaml=vim
+alias -s c=vim
+alias -s h=vim
+alias -s cpp=vim
+alias -s hpp=vim
+
+alias -s png="feh -F"
+alias -s jpg="feh -F"
+alias -s JPG="feh -F"
+alias -s jpeg="feh -F"
+
+alias -s log=less
+alias -s pdf=mupdf-x11
+alias -s html=xdg-open

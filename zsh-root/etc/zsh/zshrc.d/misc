@@ -1,16 +1,15 @@
-export PS1='%1~ %(!.#.$)%b%f '
-
-# Enables custom Vim mappings on <C-q> & <C-s>
-stty -ixon
-
-# Fixes newline issues in terminal with %'s
-stty sane
-
 # The following lines were added by compinstall
-zstyle ':completion:*' completer _complete _ignored
-zstyle ':completion:*' matcher-list '' \
+
+zstyle ':completion:*' completer _complete _ignored _approximate
+zstyle ':completion:*' expand prefix suffix
+zstyle ':completion:*' list-suffixes true
+zstyle ':completion:*' matcher-list \
+  '' \
   'm:{[:lower:][:upper:]}={[:upper:][:lower:]}' \
   'r:|[._-]=** r:|=**'
+zstyle ':completion:*' max-errors 4
+zstyle ':completion:*' original false
+zstyle ':completion:*' preserve-prefix '//[^/]##/'
 
 autoload -Uz compinit
 compinit -u
@@ -29,8 +28,26 @@ bindkey "^[[A" history-beginning-search-backward
 bindkey "^[[B" history-beginning-search-forward
 
 setopt autocd
-unsetopt beep nomatch
+unsetopt beep extendedglob nomatch notify
 # End of lines configured by zsh-newuser-install
+
+export PS1='%1~ %(!.#.$)%b%f '
+
+# Enables custom Vim mappings on <C-q> & <C-s>
+stty -ixon
+
+# Fixes newline issues in terminal with %'s
+stty sane
+
+setup-distcc() {
+  [[ $PATH != *distcc* ]] \
+  && export PATH="/usr/lib/distcc/bin:${PATH}"
+}
+
+setup-ccache() {
+  [[ $PATH != *ccache* ]] && export PATH="/usr/lib/ccache/bin:$PATH"
+  export CCACHE_DIR="/home/.ccache"
+}
 
 export EDITOR="vim"
 export LESS="-iSXFR"
@@ -38,9 +55,6 @@ export LESS="-iSXFR"
 alias vr="$EDITOR ~/.zshrc"
 alias sr='. /etc/profile;. /etc/zsh/zshrc;. ~/.zshrc'
 alias svr="sudo $EDITOR /etc/zsh/zshrc.d/misc"
-
-alias -s log="less"
-alias -s conf="$EDITOR"
 
 alias xc="xclip -selection clipboard"
 alias xp="xclip -selection clipboard -o"
@@ -64,6 +78,8 @@ alias ptop="sudo powertop"
 alias psw=powermode-switch
 alias df="df -h"
 alias du="du -h"
+alias distcc-mon="DISTCC_DIR=/var/tmp/portage/.distcc distccmon-text 3"
+alias distcc-mon-h="DISTCC_DIR=/home/.portage/tmp/portage/.distcc distccmon-text 3"
 
 bc() { command bc -l <<< "$*"; }
 dc() { date --date "$@"; }
@@ -77,6 +93,14 @@ backup() {
     $name-$date.7z $*
 }
 
+x() { sed -n $1p $2; }
+bt-restart() {
+  sudo rc-service bluealsa stop
+  sudo rc-service bluetooth stop
+  sudo rc-service bluetooth start
+  sudo rc-service bluealsa start
+}
+
 my-sdiff() {
   local S
   for i in "$@"; do
@@ -86,6 +110,19 @@ my-sdiff() {
   | ([ $S ] && cat || sed -Ee "s/^(.+ \| .*|.+<| +> .*)$/${esc}[32m\1${esc}[0m/") \
   | less
 }
+
+zram-stats() {
+  while true; do
+    local s=(`cat /sys/block/zram0/mm_stat`)
+    clear
+    echo "Orig: $(($s[1]/1024**2))M"
+    echo "Used: $(($s[3]/1024**2))M / $(($s[4]/1024**2))M"
+    echo "Comp: $((($s[1]-$s[2])*100/$s[1]))%"
+    sleep 7
+  done
+}
+
+alias ccache-stats="CCACHE_DIR=/home/.ccache watch -d -n 31 ccache --show-stats"
 
 ccache-enable() {
   export PATH="/usr/lib/ccache/bin${PATH:+:}$PATH"

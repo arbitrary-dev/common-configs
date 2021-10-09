@@ -19,7 +19,6 @@ set cmdheight=1
 " See: https://github.com/vim/vim/issues/6268
 set noruler
 
-
 " Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
 " delays and poor user experience.
 set updatetime=300

@@ -1,0 +1,29 @@
+[core]
+  editor = vim
+  pager = "less -iSXFR"
+[push]
+  default = simple
+[merge]
+  tool = vimdiff
+  conflictstyle = diff3
+[mergetool]
+  keepBackup = false
+  prompt = false
+[pager]
+  status = true
+[diff]
+  noprefix = true
+[color "interactive"]
+  prompt = yellow reverse
+[rebase]
+  autosquash = true
+[credential]
+  helper = cache
+[user]
+  email = arbitrary-dev@users.noreply.github.com
+  name = arbitrary-dev
+[filter "lfs"]
+  smudge = git-lfs smudge -- %f
+  process = git-lfs filter-process
+  required = true
+  clean = git-lfs clean -- %f

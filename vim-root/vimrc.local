@@ -3,28 +3,45 @@ if filereadable(s:profile)
   exec 'source ' . s:profile
 endif
 
+"autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+"autocmd InsertEnter * if !exists('w:last_fdm') | let w:last_fdm=&foldmethod | setlocal foldmethod=manual | endif
+"autocmd InsertLeave,WinLeave * if exists('w:last_fdm') | let &l:foldmethod=w:last_fdm | unlet w:last_fdm | endif
+
+silent exec "!mkdir -p /tmp/$USER"
+set viewdir=/tmp/$USER/vim_view
+au BufWritePost,BufLeave,WinLeave ?* mkview
+au BufReadPre ?* silent loadview
+
 set number
-set smartindent
-set ignorecase smartcase
 set nowrap
-set et sw=2 ts=2 sts=2
+set smartindent expandtab sw=2 ts=2 sts=2
 set hidden
 set clipboard=unnamedplus
 set backspace=indent,eol,start
-set hls
+set textwidth=80 colorcolumn=80
 
 " Enables per file VIM configuration
 set modeline
 
-" disable auto-wrapping on typing
+" Disable auto-wrapping on typing
 set formatoptions-=t
 
-set textwidth=80 colorcolumn=80
+" Smart search
+set hlsearch ignorecase smartcase
+
 au FileType scala setlocal tw=110 cc=110
 " nosmartindent for python, cause it messes up with shifting #* lines
 au FileType python setlocal fdm=indent nosi
 
-map K r<CR>
+set fdc=0
+let g:xml_syntax_folding=1
+au FileType xml setlocal foldmethod=syntax
+au FileType perl setlocal sw=4 ts=4 sts=4 et
+
+set exrc
+set secure
+
+map K i<CR><Esc>
 
 map =jq :%!jq --indent 2<CR>
 map =jd :%!python3 -c '
@@ -42,13 +59,11 @@ nnoremap <silent> <leader>dp :diffput<CR>
 nnoremap <silent> <leader>dg :diffget<CR>
 nnoremap <silent> <leader>w :set wrap!<CR>
 nnoremap <silent> <leader>bw :bp\|bw#<CR>
-" nnoremap <silent> <leader>f :windo set foldcolumn=0<CR>
 nnoremap <silent> <leader>fd :setl fdm=indent<CR>:let &l:fdl=indent('.')/&sw<CR>
 
 " Prevents opening of the folds during }{ navigation
 " https://github.com/vim/vim/issues/7134
 set foldopen-=block
-
 
 " trailing spaces highlighting
 au FileType *
@@ -63,7 +78,6 @@ map <F10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans
 \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
 \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
 
-
 " fix trailing space in diff additions only
 command FTS %s/^\(+.\{-}\)\s\+$/\1/
 " fix trailing space anywhere
@@ -74,9 +88,28 @@ filetype plugin indent on
 
 " Colors
 
-exe 'hi ColorColumn ctermbg=' . g:hcolordark
+" 0 8  black
+" 1 9  red
+" 2 10 green
+" 3 11 yellow
+" 4 12 blue
+" 5 13 magenta
+" 6 14 cyan
+" 7 15 white
+
+" Disable bold style
+set t_md=
+
+exe 'hi ColorColumn ctermfg=black ctermbg=' . g:hcolordark
 hi clear Search
 hi Search cterm=inverse
+hi clear IncSearch
+hi link IncSearch Search
+
+set fillchars+=vert:\ 
+hi clear VertSplit
+hi link VertSplit StatusLineNC
+
 exe 'hi Visual ctermfg=black ctermbg=' . g:hcolor
 "hi Todo ctermfg=brown ctermbg=178
 hi Comment ctermfg=darkgray
@@ -86,19 +119,23 @@ hi StatusLine cterm=none ctermfg=white ctermbg=darkgray
 hi StatusLineNC cterm=none ctermfg=black ctermbg=darkgray
 hi VertSplit cterm=none ctermfg=black ctermbg=darkgray
 hi LineNr ctermfg=darkgray
+
 set cursorline
 hi CursorLine cterm=none
 map <silent> <leader>cl :call ToggleCursorLine()<CR>
 function ToggleCursorLine()
   if match(execute('hi CursorLine'), 'ctermbg') >= 0
-    hi CursorLine ctermbg=none
+    hi clear CursorLine
   else
     exe 'hi CursorLine ctermbg=' . g:hcolordark
   endif
 endfunction
 exe 'hi CursorLineNr cterm=none ctermfg=black ctermbg=' . g:hcolor
+
 "hi ModeMsg cterm=none ctermfg=223 ctermbg=brown
+hi ModeMsg ctermfg=16 ctermbg=11
 "hi ErrorMsg ctermfg=yellow ctermbg=red
+
 hi DiffChange ctermfg=black ctermbg=darkred
 hi DiffText ctermfg=white ctermbg=red
 hi DiffDelete ctermfg=darkgray ctermbg=none
@@ -107,6 +144,10 @@ hi DiffAdd ctermfg=black ctermbg=darkgreen
 hi diffAdded ctermfg=darkgreen
 "syntax match DiffMerge /^[<|=>]\{7}.*$/ containedin=ALL contained
 "hi link DiffMerge Comment
+hi diffFile ctermfg=7 ctermbg=11
+hi clear diffIndexLine
+hi link diffIndexLine diffFile
+
 hi NonText ctermfg=darkgray
 hi SignColumn ctermbg=none
 hi Pmenu ctermfg=lightgray ctermbg=237

@@ -1,48 +1,4 @@
 export PS1='%B%F{green}'$PS1
-export NPM_PACKAGES="$HOME/.npm-packages"
-
-export PATH="\
-/opt/sbt-1.4.5/bin:\
-$HOME/projects/scripts:\
-$HOME/.local/bin:\
-$NPM_PACKAGES/bin:\
-$HOME/.local/share/coursier/bin:\
-$PATH"
-
-export MANPATH="\
-$MANPATH:\
-$NPM_PACKAGES/share/man:\
-"
-
-export PATH=$PATH:~/.jenv/bin
-# TODO eval "$(jenv init -)"
-
-export MY_DOCS=~/Documents
-alias todo="$EDITOR $MY_DOCS/_misc/todo"
-alias notes="$EDITOR $MY_DOCS/_misc/notes.md"
-
-alias -s txt="$EDITOR"
-alias -s md="$EDITOR"
-alias -s scala="$EDITOR"
-alias -s hs="$EDITOR"
-alias -s js="$EDITOR"
-alias -s ts="$EDITOR"
-alias -s yaml="$EDITOR"
-alias -s cpp="$EDITOR"
-
-alias -s mkv=mpv
-alias -s mp4=mpv
-alias -s m4a=mpv
-alias -s avi=mpv
-alias -s webm=mpv
-
-alias -s pdf=mupdf-x11
-alias -s html=xdg-open
-
-alias -s jpg=feh
-alias -s JPG=feh
-alias -s jpeg=feh
-alias -s png=feh
 
 alias hanako-fm="mpv https://musicbird.leanstream.co/JCB069-MP3"
 
@@ -70,16 +26,21 @@ yts() {
   | xs -d\  youtube-dl -f 243+139 https://www.youtube.com/watch?v={}
 }
 
-alias m=memo
-alias me="memo --edit"
-alias xb=xbacklight
-alias bat="upower -i /org/freedesktop/UPower/devices/battery_BAT0 | grep 'time to' | sed -Ee 's/  +/ /g' -e 's/^ //'"
-alias feh="feh --auto-rotate --image-bg black -Z -."
+alias am=alsamixer
+alias qmarks="vim ~/.config/qutebrowser/quickmarks"
+alias vd=vimdiff
+alias feh="feh --auto-rotate --geometry 640x480 --image-bg black -Z -."
 alias lp-a4="lp -o fit-to-page -o PageSize=A4 -o PageRegion=A4 -o PaperDimension=A4 -o ImageableArea=A4"
 alias ag-todos="ag '(((//|/?\*|#) )|\*\*|)\b(TODO|FIXME)\b(?!(:|.*INT-\d)).*$'"
 alias top="top -o %CPU"
 alias shtd="echo 'Shutdown enqueued...'; sudo shutdown -h"
 alias xbm="sudo xb-min"
+
+rs() { redshift -PO ${1}00K; }
+alias rsx="redshift -x"
+
+alias m=memo
+alias me="memo --edit"
 
 alias ssha='eval "`ssh-agent -s`"'
 alias sshk='ssh-agent -k'
@@ -101,9 +62,6 @@ gen-passw() {
   echo
 }
 
-alias rsx="redshift -x"
-rs() { redshift -PO ${1}00; }
-
 calc-music-checksums() {
   cksfv -c *.{flac,m4a,mp3} | grep -v '^;' | tee checksums.sfv
 }
@@ -116,23 +74,20 @@ get-host-certificate() {
   | sed -n '/BEGIN/,/END/p'
 }
 
-_join() {
+join_with() {
   local IFS="$1"
   shift
   echo "$*"
 }
 
 ls-files() {
-  local joined="`_join '|' $*`"
+  local joined="`join_with '|' $*`"
   find $* -type f | sed -E "s!($joined)/!!" | sort
 }
 
 alias wine32="WINEARCH=win32 WINEPREFIX=~/.wine32 wine"
 alias winecfg32="WINEARCH=win32 WINEPREFIX=~/.wine32 winecfg"
 alias winetricks32="WINEARCH=win32 WINEPREFIX=~/.wine32 winetricks"
-
-alias am=alsamixer
-alias am-bt="alsamixer -D bluealsa"
 
 weather() {
   local data="{
@@ -169,68 +124,45 @@ weather() {
   ]"
 }
 
-alias btc=bluetoothctl
-alias btd="btc disconnect"
-
+# BT volume
 btv() {
-  # Sets BT volume to 75%
   # TODO use udev rule unstead
   if amixer -D bluealsa >/dev/null; then
     local ctl=`amixer -D bluealsa scontrols | grep -i a2dp | cut -d\' -f2`
-    amixer -D bluealsa set $ctl 75% > /dev/null
+    local val=${1:-75%}
+    echo "amixer -D bluealsa sset '$ctl' $val"
+    amixer -D bluealsa set $ctl $val > /dev/null
   fi
 }
 
+# BT charge
+btc() {
+  local ctl=`amixer -D bluealsa scontrols | grep -oiE "'.*battery.*'"`
+  [ -z "$ctl" ] && echo 'No BT battery controls available!' && return 1
+  echo "amixer -D bluealsa sget $ctl"
+  amixer -D bluealsa sget $ctl | grep -oE [0-9]+%
+}
+
+# Connect BT device
 bt() {
-  local devs=`sed -En -e 's/^pcm\.(.+) .*/\1/p' -e 's/.*device "(.+)"/\1/p' ~/.asoundrc`
-  local target=${1:+`echo $devs | grep -A1 "$1" | tail -1`}
-  if [[ -z "$target" ]]; then
-    local curr=`btc info | sed -En 's/Device (.+) .*/\1/p'`
-    if [[ -n "$curr" ]]; then
-      >&2 printf "Device connected: "
-      echo $devs | grep -B1 "$curr" | head -1
-      return 0
-    else
-      >&2 echo "Possible devices:"
-      >&2 (echo $devs | grep --invert-match ":" | xs echo - {})
-      return 1
-    fi
+  if (( ! $# )); then
+    echo "Choose device to connect to:"
+    bluetoothctl <<< devices | grep Device | cut -d\  -f3-
+    return
   fi
-  local name=${1:+`echo $devs | grep "$1"`}
-  if btc show >/dev/null; then
-    btc connect "$target" && btv
-  else
-    >&2 echo "No bluetooth controller available!"
-    >&2 echo "Will try to unblock bluetooth..."
-    sudo rfkill unblock bluetooth
-    for i in {1..5}; do
-      sleep 2
-      >&2 echo "#$i attempt to connect '$name'..."
-      if btc connect "$target"; then
-        btv
-        >&2 echo $name
-        return 0
-      fi
-    done
-    >&2 echo "Unable to connect '$name'!"
 
-    if tty -s; then
-      read -k "a?Try rebinding/rescanning pci device for bluetooth? "
-      echo
-      [[ "$a" != y ]] && return 1
-      su -c '
-        dev=(/sys/bus/pci/drivers/?hci_hcd/0000:00:*)
-        echo ${dev##*/} > ${dev%/*}/unbind
-        sleep 1
-        echo ${dev##*/} > ${dev%/*}/bind
-        sleep 1
-        echo 1 > $dev/rescan
-      '
-      echo 'Done, try again!'
-    fi
+  # Connect
+  local dev=`bluetoothctl <<< devices | grep -i "device.*$1" | cut -d\  -f2-`
+  dev=(${(s/ /)dev})
+  echo "Connecting to ${dev[@]:1}..."
+  (cat <<EOF && sleep 5) | bluetoothctl
+power on
+connect ${dev[1]}
+EOF
 
-    return 1
-  fi
+  # Set volume
+  printf "Setting bluetooth volume to 75%%... "
+  btv 75% >/dev/null && echo "OK"
 }
 
 nc() {
@@ -275,6 +207,13 @@ yt2cue() {
     ! /^\[/ && prefix=$0
     next
   }'
+}
+
+gnumeric-txt() {
+  ssconvert \
+    -T Gnumeric_stf:stf_assistant \
+    -O "separator='	' format=preserve" \
+    $1 fd://1
 }
 
 mnt() {
@@ -615,3 +554,5 @@ g-ext() {
 
 alias cores-temp="watch -tn3 sh -c \"sensors coretemp-isa-0000 | sed -nE '/^Core/s/[^+]+\+([0-9]+).+/\1/p' | column  -x -c 24 | tr '\t' ' '\""
 alias uc="sudo unlock-cpu"
+
+[ -f ~/.zprofile ] && source ~/.zprofile

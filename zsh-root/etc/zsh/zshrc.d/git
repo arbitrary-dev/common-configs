@@ -1,57 +1,20 @@
 export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
 
+esc=$(printf '\033')
+alias _shorten-paths="perl -pE 's/[^ ]+ -> //;s/(?<!\.\.)\/.+\/([^\/]+\/)/\/**\/\1/'"
+
 git-unshallow() {
   git fetch --unshallow
   git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
 }
 
+alias git-reset-tree="git read-tree --reset -u HEAD"
 git-fix-ownership() {
-  # TODO only files under Git
-  chown -R $1:$1 /home/$1 /tmp/$1
+  local user=$1
+  cd /
+  git ls-tree -r HEAD home/$user --name-only \
+  | xargs chown $user:$user
 }
-
-esc=$(printf '\033')
-
-alias _shorten-paths="perl -pE 's/[^ ]+ -> //;s/(?<!\.\.)\/.+\/([^\/]+\/)/\/**\/\1/'"
-
-gst() {
-  git status --short | \
-    _shorten-paths | \
-    sed -Ee "s/^(.)(.)/${esc}[32m\1${esc}[0m${esc}[31m\2${esc}[0m/"
-}
-
-gbl() {
-  local out=$(git blame HEAD --abbrev=6 -s -L ${@:1})
-    local n=$( \
-        echo $out | \
-        \sed -nEe "s/[^)]*) ( *)[^ ].*/\1/p" | \
-        awk '{print length}' | \
-        sort -g | \
-        head -n1
-        )
-
-    echo $out | \
-    \sed -Ee "s_^([0-9a-z]+) ( *[0-9]+)\) ( {0,$n})_${esc}[32m\1 ${esc}[34m\2${esc}[0m _" | \
-    \less -iSXFR
-}
-
-alias ga="git add"
-alias gap="git apply -p0"
-alias gb="git branch"
-alias gcl="git clone"
-alias gcls="gcl --depth 1 --single-branch"
-alias gco="git checkout"
-alias gcp="git cherry-pick"
-alias gcpa="git cherry-pick --abort"
-alias gcpc="git cherry-pick --continue"
-alias grst="git reset"
-alias grvt="git revert"
-alias grvtc="grvt --continue"
-alias grvta="grvt --abort"
-alias gbs="git branch -a --format='%(refname:short) %(color:red)%(authordate:relative)' --list *$MY_NAME*"
-alias gbi="git bisect"
-alias grm="git rm --cached"
-alias gsub="git submodule"
 
 gcu() {
   local user
@@ -74,6 +37,60 @@ gcu() {
      echo "Configured user: $user"
   fi
 }
+
+git-config-sparse-checkout() {
+  git config core.sparseCheckout true
+  vim .git/info/sparse-checkout
+  git-reset-tree
+}
+
+gst() {
+  git status --short \
+  | _shorten-paths \
+  | sed -Ee "s/^(.)(.)/${esc}[32m\1${esc}[0m${esc}[31m\2${esc}[0m/"
+}
+
+grr() {
+  git branch -r | \
+  sed -e "/$MY_NAME|((master|develop)$)/d" | \
+  xargs -L1 git branch -rd
+}
+
+gbl() {
+  local out=$(git blame HEAD --abbrev=6 -s -L ${@:1})
+  local n=$( \
+    echo $out | \
+    \sed -nEe "s/[^)]*) ( *)[^ ].*/\1/p" | \
+    awk '{print length}' | \
+    sort -g | \
+    head -n1
+  )
+
+  echo $out \
+  | \sed -Ee "s_^([0-9a-z]+) ( *[0-9]+)\) ( {0,$n})_${esc}[32m\1 ${esc}[34m\2${esc}[0m _" \
+  | \less -iSXFR
+}
+
+alias ga="git add"
+alias gap="git apply -p0"
+alias gb="git branch"
+alias gcl="git clone"
+alias gcls="gcl --depth 1 --single-branch"
+alias gco="git checkout"
+alias grst="git reset"
+alias gt="git tag"
+alias gbs="git branch -a --format='%(refname:short) %(color:red)%(authordate:relative)' --list *$MY_NAME*"
+alias gbi="git bisect"
+alias grm="git rm --cached"
+alias gsub="git submodule"
+
+alias gcp="git cherry-pick"
+alias gcpa="git cherry-pick --abort"
+alias gcpc="git cherry-pick --continue"
+
+alias grvt="git revert"
+alias grvta="git revert --abort"
+alias grvta="git revert --abort"
 
 gls() { git ls-tree --full-tree -r HEAD | cut -f2; }
 alias glsr="git ls-remote --heads origin | cut -d/  -f3-"
@@ -101,7 +118,7 @@ gfco() {
 
 alias gt="git tag"
 gtr() { git ls-remote --tags ${1:-origin}; }
-gtf() { gf --tags ${1:-origin} ${2:-master}; }
+gtf() { git fetch --tags ${1:-origin} ${2:-master}; }
 
 _diff_opts=(
   --irreversible-delete
@@ -164,11 +181,11 @@ alias grc="gr --continue"
 alias gra="gr --abort"
 
 alias gm="git merge"
-alias gmff="gm --ff-only"
-alias gma="gm --abort"
-alias gmc="gm --continue"
+alias gmff="git merge --ff-only"
+alias gma="git merge --abort"
+alias gmc="git merge --continue"
 alias gmt="git mergetool"
 
-alias git-ignore="git update-index --assume-unchanged"
-alias git-unignore="git update-index --no-assume-unchanged"
-alias git-ls-ignored='git ls-files -v `git rev-parse --show-toplevel` | grep ^[a-z]'
+alias gig="git update-index --assume-unchanged"
+alias gug="git update-index --no-assume-unchanged"
+alias gli='git ls-files -v `git rev-parse --show-toplevel` | grep ^[a-z]'
