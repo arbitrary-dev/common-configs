@@ -15,26 +15,26 @@ if [ "`dirname $0`" != "." ]; then
   exit 1
 fi
 
-echo "Stowing Zsh..."
-stow --target $HOME zsh-user
-sudo stow --target / zsh-root
+echo "Stowing /etc..."
+sudo stow --target /etc etc
 if ! grep -q zshrc.d /etc/zsh/zshrc; then
   sudo sh -c \
     'printf "\nfor f in /etc/zsh/zshrc.d/*; do . \$f; done\n" >> /etc/zsh/zshrc'
 fi
+echo "Done!"
+
+echo
+echo "Stowing /root..."
+sudo stow --target /root root
+echo "Done!"
+
+echo
+echo "Stowing $HOME..."
+stow --target $HOME user
+echo "Done!"
+
+# Fixes bug #XXX in Stow
 if find -name .zshrc -execdir mv {} dot-zshrc \; -print0 | grep -qz .; then
-  # Fixes bug #XXX in Stow
+  echo
   echo "Renamed .zshrc's to dot-zshrc's"
 fi
-echo "Done!"
-
-echo
-echo "Stowing Vim..."
-stow --target $HOME/.vim vim-user
-sudo stow --target /etc/vim vim-root
-echo "Done!"
-
-echo
-echo "Stowing Git..."
-sudo stow --target /etc git-root
-echo "Done!"
