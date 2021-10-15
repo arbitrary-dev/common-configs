@@ -85,6 +85,13 @@ ls-files() {
   find $* -type f | sed -E "s!($joined)/!!" | sort
 }
 
+todo() {
+  local t=$(join_with - $0 $*)
+  vim $MY_DOCS/_misc/"$t"
+}
+
+notes() { vim $MY_DOCS/_misc/notes; }
+
 alias wine32="WINEARCH=win32 WINEPREFIX=~/.wine32 wine"
 alias winecfg32="WINEARCH=win32 WINEPREFIX=~/.wine32 winecfg"
 alias winetricks32="WINEARCH=win32 WINEPREFIX=~/.wine32 winetricks"
