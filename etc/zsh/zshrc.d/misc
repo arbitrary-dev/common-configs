@@ -56,11 +56,35 @@ alias vr="$EDITOR ~/.zshrc"
 alias sr='. /etc/profile;. /etc/zsh/zshrc;. ~/.zshrc'
 alias svr="sudo $EDITOR /etc/zsh/zshrc.d/misc"
 
-alias xc="xclip -selection clipboard"
-alias xp="xclip -selection clipboard -o"
+alias xc="wl-copy 2>/dev/null || xclip -selection clipboard"
+alias xp="wl-paste 2>/dev/null || xclip -selection clipboard -o"
 
-alias ecurr="watch -ctn 30 genlop -c"
-alias ehist="genlop -it"
+alias ecurr="sudo watch -ctn 30 genlop -c"
+alias ehist="sudo genlop -it"
+alias ecln="emerge --ask --depclean"
+alias eclnd="eclean-dist --deep --fetch-restricted"
+
+esync() {
+  ecln || return 1
+
+  local sync_log="/tmp/.emaint.log"
+
+  printf "\nSyncing... "
+  if sudo emaint sync -a &> $sync_log; then
+    echo "done"
+  else
+    echo "FAILED $sync_log"
+    return 1
+  fi
+}
+
+emrg() {
+  if (( $# )); then
+    sudo emerge "$@"
+  else
+    sudo emerge -avuUDN --quiet-build --keep-going @world
+  fi
+}
 
 alias bfs-usage="btrfs filesystem usage"
 alias bfs-du="btrfs fi du"
@@ -72,14 +96,27 @@ alias cpv="rsync -rh --info=progress2"
 # Should remove empty source dirs afterwards
 alias mvv="rsync -rh --info=progress2 --remove-source-files"
 
-alias rn=perl-rename
+alias xb="sudo xb"
+alias ccs="CCACHE_DIR=/var/cache/ccache watch -d -n13 ccache -sv"
+alias rn="perl-rename"
 alias xs="xargs -I{}"
 alias ptop="sudo powertop"
-alias psw=powermode-switch
+alias psw="powermode-switch"
+alias rbt="sudo reboot"
+alias shtd="echo 'Shutdown enqueued...'; sudo shutdown -h"
+
 alias df="df -h"
 alias du="du -h"
+
 alias distcc-mon="DISTCC_DIR=/var/tmp/portage/.distcc distccmon-text 3"
 alias distcc-mon-h="DISTCC_DIR=/home/.portage/tmp/portage/.distcc distccmon-text 3"
+
+rs() {
+  tty | grep -q tty && local use_drm=1
+  pkill gammastep
+  gammastep ${use_drm:+-m drm} ${1:+-PO ${1}00K} ${1:--x} ${2:+-g $2} &
+  disown
+}
 
 bc() { command bc -l <<< "$*"; }
 dc() { date --date "$@"; }

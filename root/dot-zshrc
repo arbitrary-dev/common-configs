@@ -15,52 +15,18 @@ alias regen-manifest="repoman manifest"
 alias mc="make menuconfig"
 alias mo="make oldconfig"
 
-emrg() {
-  if (( $# )); then
-    emerge "$@"
-  else
-    emerge -avuDN --quiet-build --keep-going @world
-  fi
-}
-
 alias emrg-c="FEATURES=ccache emrg"
 alias emrg-d="FEATURES=distcc MAKEOPTS='-j25 -l2' emrg"
 alias emrg-h="PORTAGE_TMPDIR=/home/.portage-tmpdir emrg"
 alias emrg-hc="PORTAGE_TMPDIR=/home/.portage-tmpdir emrg-c"
 alias emrg-hd="PORTAGE_TMPDIR=/home/.portage-tmpdir emrg-d"
 
-emrg-preserved-rebuild() { emerge ${1:--a} @preserved-rebuild; }
-alias ecurr="watch -ctn 30 genlop -c"
-alias ehist="genlop -it"
 alias eadd="emerge --noreplace"
 alias emask="qlist -IC"
-
-alias ecln="emerge --ask --depclean"
-alias eclnd="eclean-dist --deep --fetch-restricted"
-
-esync() {
-  ecln || return 1
-
-  local sync_log="/tmp/.emaint.log"
-
-  printf "\nSyncing... "
-  if emaint sync -a &> $sync_log; then
-    echo "done"
-  else
-    echo "FAILED $sync_log"
-    return 1
-  fi
-
-  emerge -avuDN --quiet-build --keep-going @world
-}
 
 crossdev-netbook() {
   crossdev --target i686-pc-linux-gnu \
     --binutils '=2.34*' --gcc '=9.3*' --kernel '=5.4*' --libc '=2.32*'
-}
-
-xb() {
-  echo $((2**$1)) > /sys/class/backlight/intel_backlight/brightness
 }
 
 alias docker-clean="docker system prune --volumes"

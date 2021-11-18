@@ -26,18 +26,12 @@ yts() {
   | xs -d\  youtube-dl -f 243+139 https://www.youtube.com/watch?v={}
 }
 
-alias am=alsamixer
+alias am="alsamixer"
 alias qmarks="vim ~/.config/qutebrowser/quickmarks"
-alias vd=vimdiff
+alias vd="vimdiff"
 alias feh="feh --auto-rotate --geometry 640x480 --image-bg black -Z -."
 alias lp-a4="lp -o fit-to-page -o PageSize=A4 -o PageRegion=A4 -o PaperDimension=A4 -o ImageableArea=A4"
 alias ag-todos="ag '(((//|/?\*|#) )|\*\*|)\b(TODO|FIXME)\b(?!(:|.*INT-\d)).*$'"
-alias top="top -o %CPU"
-alias shtd="echo 'Shutdown enqueued...'; sudo shutdown -h"
-alias xbm="sudo xb-min"
-
-rs() { redshift -PO ${1}00K; }
-alias rsx="redshift -x"
 
 alias m=memo
 alias me="memo --edit"
@@ -513,7 +507,10 @@ rec-screen() {
   echo "Screen saver turned on."
 }
 
-# Install extension for ungoogled-chromium
+# Installs extension for ungoogled-chromium
+#
+# Set "Always promt for install" in case of issues:
+# chrome://flags/#extension-mime-request-handling
 uc-ext() {
   if (( $# == 0 )); then
     echo "Please specify extension ID and ungoogled-chromium version!"
@@ -521,13 +518,9 @@ uc-ext() {
   fi
 
   local ext=$1
-  local ver=${2:-89.0.4389.114}
+  local ver=${2:-95.0.4638.69}
 
-  if [ -z "$2" ] && ! read -q \?"Are you sure you have $ver? "; then
-    echo
-    return 1
-  fi
-  echo
+  [ -z "$2" ] && echo "Assuming ungoogled-chromium $ver"
 
   xdg-open "https://clients2.google.com/service/update2/crx?response=redirect&acceptformat=crx2,crx3&prodversion=$ver&x=id%3D$ext%26installsource%3Dondemand%26uc"
 }

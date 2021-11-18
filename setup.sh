@@ -30,6 +30,7 @@ echo "Done!"
 
 echo
 echo "Stowing $HOME..."
+mkdir -p $HOME/.vim
 stow --target $HOME user
 echo "Done!"
 
