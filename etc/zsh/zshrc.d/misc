@@ -65,11 +65,9 @@ alias ecln="emerge --ask --depclean"
 alias eclnd="eclean-dist --deep --fetch-restricted"
 
 esync() {
-  ecln || return 1
-
   local sync_log="/tmp/.emaint.log"
 
-  printf "\nSyncing... "
+  printf "Syncing... "
   if sudo emaint sync -a &> $sync_log; then
     echo "done"
   else
