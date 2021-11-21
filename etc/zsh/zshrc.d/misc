@@ -52,10 +52,10 @@ setup-ccache() {
 export EDITOR="vim"
 export LESS="-iSXFR"
 
-alias vr="$EDITOR ~/.zshrc"
+alias vr="vim ~/.zshrc"
 alias vp="vim ~/.zprofile"
 alias sr='. /etc/profile;. /etc/zsh/zshrc;. ~/.zshrc'
-alias svr="sudo $EDITOR /etc/zsh/zshrc.d/misc"
+alias svr="sudo vim /etc/zsh/zshrc.d/misc"
 
 xc() { wl-copy 2>/dev/null || xclip -selection clipboard; }
 xp() { wl-paste 2>/dev/null || xclip -selection clipboard -o; }
@@ -68,8 +68,7 @@ alias eclnd="eclean-dist --deep --fetch-restricted"
 esync() {
   local sync_log="/tmp/.emaint.log"
 
-  printf "Syncing... "
-  if sudo emaint sync -a &> $sync_log; then
+  if sudo sh -c "printf 'Syncing... '; emaint sync -a &> $sync_log"; then
     echo "done"
   else
     echo "FAILED $sync_log"
@@ -98,7 +97,7 @@ alias mvv="rsync -rh --info=progress2 --remove-source-files"
 alias bat=battery
 alias ccs="CCACHE_DIR=/var/cache/ccache watch -d -n13 ccache -sv"
 alias ptop="sudo powertop"
-alias psw="powermode-switch"
+alias psw="sudo /home/*/projects/scripts/powermode-switch"
 alias rbt="sudo reboot"
 alias rn="perl-rename"
 alias shtd="echo 'Shutdown enqueued...'; sudo shutdown -h"
