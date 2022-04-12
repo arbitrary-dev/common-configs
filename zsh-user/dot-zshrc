@@ -6,6 +6,7 @@ export PATH="\
 $HOME/projects/scripts:\
 $HOME/.local/bin:\
 $NPM_PACKAGES/bin:\
+$HOME/.local/share/coursier/bin:\
 $PATH"
 
 export MANPATH="\
@@ -31,6 +32,7 @@ alias -s cpp="$EDITOR"
 
 alias -s mkv=mpv
 alias -s mp4=mpv
+alias -s m4a=mpv
 alias -s avi=mpv
 alias -s webm=mpv
 
@@ -348,11 +350,12 @@ umnt() {
   mount | grep -q "$from" && [[ "$PWD" = "$from"* ]] && cd ~
   local dev=`mount | grep $from | cut -d\  -f1 | sed 's/[0-9]\+$//'`
 
-  printf "Syncing $from ... "
-  sync "$from"
-  echo "OK"
-
-  sudo sh -c "umount '$from' && rm -d '$from' && echo '$from unmounted'"
+  sudo sh -c "
+    printf 'Unmounting $from... '
+    umount '$from' \
+    && rm -d '$from' \
+    && echo OK
+  "
   if (( ! `mount | grep -c $dev` )) && whence -p eject-device >/dev/null; then
     read -k "a?No more mounts for $dev, eject it? "
     echo
@@ -364,12 +367,12 @@ umnt() {
 # Phone
 
 mnt-phone() {
-  mkdir -p $TMPDIR/mtp
-  mtpfs $TMPDIR/mtp
+  mkdir -p /mnt/phone
+  mtpfs /mnt/phone
 }
 umnt-phone() {
-  fusermount -u $TMPDIR/mtp
-  rm -d $TMPDIR/mtp
+  fusermount -u /mnt/phone
+  rm -d /mnt/phone
 }
 
 # Work
@@ -396,14 +399,16 @@ sbt-to() {
 }
 
 sbt-it() {
-  sbt -Dsbt.supershell=false -Dsbt.color=true it:test 2>/dev/null \
+  sbt -Dsbt.supershell=false -Dsbt.color=true \
+    integrationTest \
+    2> /dev/null \
   | \sed -En '/\[.*(info|error).*\]/p'
 }
 
 sbt-ito() {
   sbt -Dsbt.supershell=false -Dsbt.color=true \
-  "$1 / IntegrationTest / testOnly ${2:+*$2*} ${3:+-- -z \"$3\"}" \
-  2>/dev/null \
+    "$1 / IntegrationTest / testOnly ${2:+*$2*} ${3:+-- -z \"$3\"}" \
+    2> /dev/null \
   | \sed -En '/\[.*(info|error).*\]/p'
 }
 
@@ -443,44 +448,75 @@ _check-tmpdir() {
 
 _push-metals-tmpfs() {
   _check-tmpdir || return 1
+
   local project=`basename $PWD`
   local target="$TMPDIR/.bloop/$project"
-  [[ -d "$target" ]] && echo "$target already exists" && return 0
-  mkdir -p "$TMPDIR/.bloop"
-  if [[ -d .bloop ]]; then
-    mv .bloop $target \
-    || return 1
-  else
-    mkdir $target
-  fi
-  ln -s $target .bloop \
-  && echo "Pushed to $target"
+
+  printf "Preparing $target... "
+  # Why not reuse? https://github.com/scalameta/coc-metals/issues/410
+  rm -rf .bloop .metals "$target"
+  mkdir -p "$target" \
+  && ln -s $target .bloop \
+  && echo "OK"
 }
 
 _pop-metals-tmpfs() {
   _check-tmpdir || return 1
+
   local project=`basename $PWD`
   local target="$TMPDIR/.bloop/$project"
-  [[ ! -d "$target" ]] && echo "Nothing to pop at $target" && return 1
-  rm .bloop \
-  && mv $target .bloop \
-  && echo "Popped from $target"
+
+  printf "Cleaning up... "
+  # Why not reuse? https://github.com/scalameta/coc-metals/issues/410
+  rm -rf .bloop .metals "$target" && echo "OK"
+}
+
+_metals_open() {
+  if _push-metals-tmpfs; then
+    if vim "$1"; then
+      sleep 1
+      _pop-metals-tmpfs
+    fi
+  fi
 }
 
 metals() {
-  local file=${1:-build.sbt}
-  if [[ -n "$1" && ! -f "${file%:*}" ]]; then
-    file=(**/"$1".scala)
+  if [[ "$1" == "-c" || "$1" == "--clean" ]]; then
+    printf "Cleaning up everything... "
+    rm -rf .bloop .metals **/target/ >/dev/null || return 1
+    echo "Done."
+    shift
   fi
-  if [ -f "${file%:*}" ]; then
-    if _push-metals-tmpfs; then
-      if vim "$file"; then
-        sleep 1
-        _pop-metals-tmpfs
-      fi
+
+  local file="$1"
+  file="${file:-build.sbt}"
+
+  local line
+  if [[ "$file" != "${file%:*}" ]]; then
+    line="${file##*:}"
+  fi
+  if [[ -f "${file%:*}" ]]; then
+    _metals_open "$file"
+  elif [[ -n "$1" && ! -f "${file%:*}" ]]; then
+    local fs
+    if [[ "${file%:*}" =~ [A-Z] ]]; then
+      fs=(`ag --case-sensitive -g "\b${file%:*}\b"`)
+    else
+      fs=(`ag -g "${file%:*}"`)
     fi
-  else
-    echo "Unable to find: $file"
+    if (( $#fs > 1 )); then
+      for f in $fs; do echo $f; done
+      echo
+      vared -p "Which one? " -c file
+      echo
+      metals $file
+    elif (( $#fs )); then
+      file=${fs[1]}${line:+:$line}
+      _metals_open "$file"
+    else
+      echo "No matches found!"
+      return 1
+    fi
   fi
 }
 
@@ -507,11 +543,25 @@ rec-screen() {
   xset s off -dpms
   echo "Screen saver turned off."
 
+  local out=~"/Videos/_unsorted/screen-`date +%Y-%m-%d-%H%M%S`.mp4"
+  mkdir -p "`dirname $out`"
+
   # TODO utilize xrectsel
+
+  # The range of the CRF scale is 0–51, where 0 is lossless, 23 is the default,
+  # and 51 is worst quality possible. A lower value generally leads to higher
+  # quality, and a subjectively sane range is 17–28. Consider 17 or 18 to be
+  # visually lossless or nearly so; it should look the same or nearly the same
+  # as the input but it isn't technically lossless.
   ffmpeg -y -f x11grab -draw_mouse 0 -show_region 1 -video_size 800x600 \
     -framerate 25 -i :0.0+1110,470 \
-    -f pulse -i $adev -ac 1 \
-    $TMPDIR/output.mkv
+    -f pulse -i $adev \
+    -c:a libfdk_aac -profile:a aac_he -ar 44100 -vbr 3 -ac 2 \
+    -c:v libx264 -preset:v fast -crf 18 \
+    -vf hqdn3d=4:3:6:4.5 \
+    $out
+  # -c:v libx264 -preset:v veryslow -crf 17 \
+  echo "$out"
 
   xset s on +dpms
   echo "Screen saver turned on."
@@ -562,3 +612,6 @@ g-ext() {
   fi
   echo
 }
+
+alias cores-temp="watch -tn3 sh -c \"sensors coretemp-isa-0000 | sed -nE '/^Core/s/[^+]+\+([0-9]+).+/\1/p' | column  -x -c 24 | tr '\t' ' '\""
+alias uc="sudo unlock-cpu"

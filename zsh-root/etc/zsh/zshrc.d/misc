@@ -25,8 +25,8 @@ HISTFILE=~/.zhistory
 HISTSIZE=2000
 SAVEHIST=$HISTSIZE
 setopt appendhistory histignorespace histignorealldups
-bindkey "$key[Up]" history-beginning-search-backward
-bindkey "$key[Down]" history-beginning-search-forward
+bindkey "^[[A" history-beginning-search-backward
+bindkey "^[[B" history-beginning-search-forward
 
 setopt autocd
 unsetopt beep nomatch
@@ -55,6 +55,7 @@ alias bfs-comp="sudo compsize"
 alias bfs-defrag="btrfs filesystem defragment -r -clzo"
 
 alias cpv="rsync -rh --info=progress2"
+# Should remove empty source dirs afterwards
 alias mvv="rsync -rh --info=progress2 --remove-source-files"
 
 alias rn=perl-rename
