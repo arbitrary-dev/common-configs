@@ -57,8 +57,8 @@ alias vp="vim ~/.zprofile"
 alias sr='. /etc/profile;. /etc/zsh/zshrc;. ~/.zshrc'
 alias svr="sudo $EDITOR /etc/zsh/zshrc.d/misc"
 
-alias xc="wl-copy 2>/dev/null || xclip -selection clipboard"
-alias xp="wl-paste 2>/dev/null || xclip -selection clipboard -o"
+xc() { wl-copy 2>/dev/null || xclip -selection clipboard; }
+xp() { wl-paste 2>/dev/null || xclip -selection clipboard -o; }
 
 alias ecurr="sudo watch -ctn 30 genlop -c"
 alias ehist="sudo genlop -it"
