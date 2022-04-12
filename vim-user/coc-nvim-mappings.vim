@@ -1,3 +1,7 @@
+if (index(v:argv, '-d') != -1 || v:argv[-1] =~ "\.git/")
+  let g:coc_start_at_startup=0
+endif
+
 " Set internal encoding of vim, not needed on neovim, since coc.nvim using some
 " unicode characters in the file autoload/float.vim
 set encoding=utf-8
