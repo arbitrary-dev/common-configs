@@ -1,3 +1,4 @@
+alias -s m4a=mpv
 alias -s mp4=mpv
 alias -s MPG=mpv
 alias -s avi=mpv

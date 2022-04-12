@@ -53,6 +53,7 @@ export EDITOR="vim"
 export LESS="-iSXFR"
 
 alias vr="$EDITOR ~/.zshrc"
+alias vp="vim ~/.zprofile"
 alias sr='. /etc/profile;. /etc/zsh/zshrc;. ~/.zshrc'
 alias svr="sudo $EDITOR /etc/zsh/zshrc.d/misc"
 
@@ -94,14 +95,15 @@ alias cpv="rsync -rh --info=progress2"
 # Should remove empty source dirs afterwards
 alias mvv="rsync -rh --info=progress2 --remove-source-files"
 
-alias xb="sudo xb"
+alias bat=battery
 alias ccs="CCACHE_DIR=/var/cache/ccache watch -d -n13 ccache -sv"
-alias rn="perl-rename"
-alias xs="xargs -I{}"
 alias ptop="sudo powertop"
 alias psw="powermode-switch"
 alias rbt="sudo reboot"
+alias rn="perl-rename"
 alias shtd="echo 'Shutdown enqueued...'; sudo shutdown -h"
+alias xb="sudo xb"
+alias xs="xargs -I{}"
 
 alias df="df -h"
 alias du="du -h"
@@ -110,9 +112,11 @@ alias distcc-mon="DISTCC_DIR=/var/tmp/portage/.distcc distccmon-text 3"
 alias distcc-mon-h="DISTCC_DIR=/home/.portage/tmp/portage/.distcc distccmon-text 3"
 
 rs() {
+  local app="redshift"
+  which gammastep &>/dev/null && app="gammastep"
   tty | grep -q tty && local use_drm=1
-  pkill gammastep
-  gammastep ${use_drm:+-m drm} ${1:+-PO ${1}00K} ${1:--x} ${2:+-g $2} &
+  pkill $app
+  $app ${use_drm:+-m drm} ${1:+-PO ${1}00K} ${1:--x} ${2:+-g $2} &
   disown
 }
 

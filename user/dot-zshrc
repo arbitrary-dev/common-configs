@@ -26,12 +26,11 @@ yts() {
   | xs -d\  youtube-dl -f 243+139 https://www.youtube.com/watch?v={}
 }
 
+alias ag-todos="ag '(((//|/?\*|#) )|\*\*|)\b(TODO|FIXME)\b(?!(:|.*INT-\d)).*$'"
 alias am="alsamixer"
-alias qmarks="vim ~/.config/qutebrowser/quickmarks"
 alias vd="vimdiff"
 alias feh="feh --auto-rotate --geometry 640x480 --image-bg black -Z -."
 alias lp-a4="lp -o fit-to-page -o PageSize=A4 -o PageRegion=A4 -o PaperDimension=A4 -o ImageableArea=A4"
-alias ag-todos="ag '(((//|/?\*|#) )|\*\*|)\b(TODO|FIXME)\b(?!(:|.*INT-\d)).*$'"
 
 alias m=memo
 alias me="memo --edit"
@@ -307,12 +306,12 @@ umnt() {
 # Phone
 
 mnt-phone() {
-  mkdir -p /mnt/phone
-  mtpfs /mnt/phone
+  mkdir -p /mnt/phone \
+  && mtpfs -o big_writes /mnt/phone
 }
 umnt-phone() {
-  fusermount -u /mnt/phone
-  rm -d /mnt/phone
+  fusermount -u /mnt/phone \
+  && rm -d /mnt/phone
 }
 
 # Work
@@ -364,18 +363,6 @@ setup-ssh-terminal() {
   ssh $1 mkdir -p .terminfo/r
   scp /usr/share/terminfo/r/rxvt-unicode-256color $1:.terminfo/r
 }
-
-#source ~/work/_issues/source-me.sh
-
-export MY_SCRIPTS=~/work/_scripts
-export PATH=$PATH:$MY_SCRIPTS
-ss() { vim $MY_SCRIPTS/${1:-misc}-source.sh; }
-
-if [[ -d $MY_SCRIPTS ]]; then
-  for s in $(ls $MY_SCRIPTS/*-source.sh); do
-    source $s
-  done
-fi
 
 # Scala Metals
 
@@ -494,7 +481,7 @@ rec-screen() {
   # visually lossless or nearly so; it should look the same or nearly the same
   # as the input but it isn't technically lossless.
   ffmpeg -y -f x11grab -draw_mouse 0 -show_region 1 -video_size 800x600 \
-    -framerate 25 -i :0.0+1110,470 \
+    -framerate 25 -i :0.0+1060,30 \
     -f pulse -i $adev \
     -c:a libfdk_aac -profile:a aac_he -ar 44100 -vbr 3 -ac 2 \
     -c:v libx264 -preset:v fast -crf 18 \

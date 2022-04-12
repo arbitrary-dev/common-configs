@@ -83,6 +83,25 @@ command FTS %s/^\(+.\{-}\)\s\+$/\1/
 " fix trailing space anywhere
 command FTSA %s/\s\+$//
 
+function ScalaSpec()
+  if ! $ft == 'scala'
+    return
+  endif
+  let file = expand('%:p')
+  if file =~ '/main/'
+    let f = substitute(file, '/main/', '/test/', '')
+    let f = substitute(f, '\(\.scala\)\@=', 'Spec', '')
+  else
+    let f = substitute(file, '/test/', '/main/', '')
+    let f = substitute(f, 'Spec\.', '.', '')
+  endif
+  if filereadable(f)
+    exec ':edit ' . f
+  endif
+endfunction
+
+map <silent> <Leader>s :call ScalaSpec()<CR>
+
 syntax on
 filetype plugin indent on
 
@@ -144,7 +163,8 @@ hi DiffAdd ctermfg=black ctermbg=darkgreen
 hi diffAdded ctermfg=darkgreen
 "syntax match DiffMerge /^[<|=>]\{7}.*$/ containedin=ALL contained
 "hi link DiffMerge Comment
-hi diffFile ctermfg=7 ctermbg=11
+hi clear diffFile
+hi link diffFile NonText
 hi clear diffIndexLine
 hi link diffIndexLine diffFile
 

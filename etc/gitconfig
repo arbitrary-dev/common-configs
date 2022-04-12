@@ -14,14 +14,11 @@
 [diff]
   noprefix = true
 [color "interactive"]
-  prompt = yellow reverse
+  prompt = red reverse
 [rebase]
   autosquash = true
 [credential]
   helper = cache
-[user]
-  email = arbitrary-dev@users.noreply.github.com
-  name = arbitrary-dev
 [filter "lfs"]
   smudge = git-lfs smudge -- %f
   process = git-lfs filter-process
