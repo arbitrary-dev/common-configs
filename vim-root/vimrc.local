@@ -1,3 +1,8 @@
+let s:profile = expand('<sfile>:p:h') . '/vimrc.profile'
+if filereadable(s:profile)
+  exec 'source ' . s:profile
+endif
+
 set number
 set smartindent
 set ignorecase smartcase
@@ -69,14 +74,10 @@ filetype plugin indent on
 
 " Colors
 
-" TODO extract to a file and import
-let s:hcolor = "darkcyan"
-let s:hcolordark = 23
-
-exe 'hi ColorColumn ctermbg=' . s:hcolordark
+exe 'hi ColorColumn ctermbg=' . g:hcolordark
 hi clear Search
 hi Search cterm=inverse
-exe 'hi Visual ctermfg=black ctermbg=' . s:hcolor
+exe 'hi Visual ctermfg=black ctermbg=' . g:hcolor
 "hi Todo ctermfg=brown ctermbg=178
 hi Comment ctermfg=darkgray
 hi Folded ctermfg=darkgray ctermbg=none
@@ -92,10 +93,10 @@ function ToggleCursorLine()
   if match(execute('hi CursorLine'), 'ctermbg') >= 0
     hi CursorLine ctermbg=none
   else
-    exe 'hi CursorLine ctermbg=' . s:hcolordark
+    exe 'hi CursorLine ctermbg=' . g:hcolordark
   endif
 endfunction
-exe 'hi CursorLineNr cterm=none ctermfg=black ctermbg=' . s:hcolor
+exe 'hi CursorLineNr cterm=none ctermfg=black ctermbg=' . g:hcolor
 "hi ModeMsg cterm=none ctermfg=223 ctermbg=brown
 "hi ErrorMsg ctermfg=yellow ctermbg=red
 hi DiffChange ctermfg=black ctermbg=darkred
@@ -109,7 +110,7 @@ hi diffAdded ctermfg=darkgreen
 hi NonText ctermfg=darkgray
 hi SignColumn ctermbg=none
 hi Pmenu ctermfg=lightgray ctermbg=237
-exe 'hi PmenuSel ctermfg=black ctermbg=' . s:hcolor
+exe 'hi PmenuSel ctermfg=black ctermbg=' . g:hcolor
 
 hi scalaKeywordModifier ctermfg=yellow
 hi scalaUnimplemented ctermfg=black ctermbg=yellow
