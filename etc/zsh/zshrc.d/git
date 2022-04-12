@@ -51,9 +51,10 @@ gst() {
 }
 
 grr() {
-  git branch -r | \
-  sed -e "/$MY_NAME|((master|develop)$)/d" | \
-  xargs -L1 git branch -rd
+  git branch -r \
+  | grep -vE "$MY_NAME|((master|develop)$)" \
+  | xargs -L1 git branch -dr
+  git branch -dr origin/HEAD &> /dev/null
 }
 
 gbl() {

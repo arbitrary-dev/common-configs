@@ -100,7 +100,7 @@ function ScalaSpec()
   endif
 endfunction
 
-map <silent> <Leader>s :call ScalaSpec()<CR>
+map <silent> <Leader>ss :call ScalaSpec()<CR>
 
 syntax on
 filetype plugin indent on
