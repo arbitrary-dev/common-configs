@@ -142,7 +142,8 @@ xmap <silent> <C-s> <Plug>(coc-range-select)
 
 " Add `:Format` command to format current buffer.
 "command! -nargs=0 Format :call CocAction('format')
-nmap <silent> <leader>ft :call CocAction('format')<CR>
+" https://github.com/neoclide/coc.nvim/issues/2899#issuecomment-1007993214
+nmap <silent> <leader>ft :call CocActionAsync('format')<CR>
 
 " Add `:Fold` command to fold current buffer.
 command! -nargs=? Fold :call     CocAction('fold', <f-args>)
@@ -194,3 +195,4 @@ au FileType list setlocal cc=
 
 nnoremap <leader>h :CocCommand clangd.switchSourceHeader<CR>
 nnoremap <leader>at :CocList grep \\b(TODO\|FIXME)\\b(?!(:\|.*INT-\d))<CR>
+nnoremap <leader>st :!sbt "root/IntegrationTest/testOnly *.%:t:r"<CR>

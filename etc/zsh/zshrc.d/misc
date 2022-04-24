@@ -62,8 +62,8 @@ xp() { wl-paste 2>/dev/null || xclip -selection clipboard -o; }
 
 alias ecurr="sudo watch -ctn 30 genlop -c"
 alias ehist="sudo genlop -it"
-alias ecln="emerge --ask --depclean"
-alias eclnd="eclean-dist --deep --fetch-restricted"
+alias ecln="sudo emerge --ask --depclean"
+alias eclnd="sudo eclean-dist --deep --fetch-restricted"
 
 esync() {
   local sync_log="/tmp/.emaint.log"
@@ -78,7 +78,11 @@ esync() {
 
 emrg() {
   if (( $# )); then
-    sudo emerge "$@"
+    if [[ "$1" == -* ]]; then
+      sudo emerge "$@"
+    else
+      sudo emerge -av --quiet-build "$@"
+    fi
   else
     sudo emerge -avuUDN --quiet-build --keep-going @world
   fi
@@ -103,6 +107,7 @@ alias rn="perl-rename"
 alias shtd="echo 'Shutdown enqueued...'; sudo shutdown -h"
 alias xb="sudo xb"
 alias xs="xargs -I{}"
+my-ping() { while ! ping ${1:-gentoo.org}; do sleep 3; done }
 
 alias df="df -h"
 alias du="du -h"

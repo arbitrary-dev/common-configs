@@ -153,7 +153,7 @@ exe 'hi CursorLineNr cterm=none ctermfg=black ctermbg=' . g:hcolor
 
 "hi ModeMsg cterm=none ctermfg=223 ctermbg=brown
 hi ModeMsg ctermfg=16 ctermbg=11
-"hi ErrorMsg ctermfg=yellow ctermbg=red
+hi ErrorMsg ctermfg=black ctermbg=red
 
 hi DiffChange ctermfg=black ctermbg=darkred
 hi DiffText ctermfg=white ctermbg=red

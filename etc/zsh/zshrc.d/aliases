@@ -26,5 +26,5 @@ alias -s JPG="feh -F"
 alias -s jpeg="feh -F"
 
 alias -s log=less
-alias -s pdf=mupdf-x11
+alias -s pdf=mupdf
 alias -s html=xdg-open

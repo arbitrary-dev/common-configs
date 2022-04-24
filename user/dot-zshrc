@@ -2,10 +2,27 @@ export PS1='%B%F{green}'$PS1
 
 alias hanako-fm="mpv https://musicbird.leanstream.co/JCB069-MP3"
 
-alias yt=youtube-dl
-alias yta="youtube-dl -f bestaudio[ext=m4a]"
-alias ytv="youtube-dl -f bestvideo+bestaudio"
+alias yt="mpv --ytdl-format='worstvideo[height>=240]+worstaudio'"
+ytm() {
+  while true; do
+    case "$1" in
+      w)  local format="worstaudio" ;;
+      bc) local bigcache ;;
+      *)  break ;;
+    esac
+    shift
+  done
+
+  mpv --no-video \
+      ${format:+--ytdl-format=$format} \
+      ${bigcache---demuxer-max-bytes=5MiB} \
+      ${bigcache+--profile=bigcache} \
+      "${@:-$YTM_DEF_PLAYLIST}"
+}
 alias ytf="youtube-dl --list-formats"
+alias ytd="youtube-dl"
+alias ytda="youtube-dl -f bestaudio[ext=m4a]"
+alias ytdv="youtube-dl -f bestvideo+bestaudio"
 
 yt-proxified() {
   local proxies=(`
@@ -410,6 +427,8 @@ _metals_open() {
 }
 
 metals() {
+  export TMPDIR=${TMPDIR:-/tmp}
+
   if [[ "$1" == "-c" || "$1" == "--clean" ]]; then
     printf "Cleaning up everything... "
     rm -rf .bloop .metals **/target/ >/dev/null || return 1
@@ -447,17 +466,6 @@ metals() {
       return 1
     fi
   fi
-}
-
-smb-start() {
-  mkdir -p $TMPDIR/samba
-  sudo chown nobody $TMPDIR/samba
-  sudo chmod g+w $TMPDIR/samba
-  sudo rc-service samba start
-}
-
-smb-stop() {
-  sudo rc-service samba stop
 }
 
 rec-screen() {
@@ -507,7 +515,7 @@ uc-ext() {
   fi
 
   local ext=$1
-  local ver=${2:-95.0.4638.69}
+  local ver=${2:-97.0.4692.71}
 
   [ -z "$2" ] && echo "Assuming ungoogled-chromium $ver"
 
@@ -543,5 +551,17 @@ g-ext() {
 
 alias cores-temp="watch -tn3 sh -c \"sensors coretemp-isa-0000 | sed -nE '/^Core/s/[^+]+\+([0-9]+).+/\1/p' | column  -x -c 24 | tr '\t' ' '\""
 alias uc="sudo unlock-cpu"
+
+# Converts this: '2022'!$AG$13,'2022'!$AG$23,'2022'!$AG$33
+# Into this:     '2022'!$AG$10,'2022'!$AG$20,'2022'!$AG$30
+awk-upd-csv-vals() {
+	awk -F, 'BEGIN { OFS = FS } {
+		for (i=1; i<=NF; i++) {
+			split($i, a, "$")
+			$i = sprintf("%s$%s$%d", a[1], a[2], a[3] - 3)
+		}
+		print
+	}'
+}
 
 [ -f ~/.zprofile ] && source ~/.zprofile
