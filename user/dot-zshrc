@@ -2,7 +2,10 @@ export PS1='%B%F{green}'$PS1
 
 alias hanako-fm="mpv https://musicbird.leanstream.co/JCB069-MP3"
 
-alias yt="mpv --ytdl-format='worstvideo[height>=240]+worstaudio'"
+alias yt="youtube-dl"
+# YouTube watch
+alias ytw="mpv --ytdl-format='worstvideo[height>=240]+worstaudio'"
+# YT music
 ytm() {
   while true; do
     case "$1" in
@@ -19,12 +22,15 @@ ytm() {
       ${bigcache+--profile=bigcache} \
       "${@:-$YTM_DEF_PLAYLIST}"
 }
+# List available formats for YT video
 alias ytf="youtube-dl --list-formats"
-alias ytd="youtube-dl"
-alias ytda="youtube-dl -f bestaudio[ext=m4a]"
-alias ytdv="youtube-dl -f bestvideo+bestaudio"
+# Download YT audio in best quality
+alias yta="youtube-dl -f bestaudio[ext=m4a]"
+# Download YT video in best quality
+alias ytv="youtube-dl -f bestvideo+bestaudio"
 
-yt-proxified() {
+# Download YT video using free proxies
+ytp() {
   local proxies=(`
     curl -s https://raw.githubusercontent.com/clarketm/proxy-list/master/proxy-list.txt \
     | grep RU \
@@ -38,6 +44,7 @@ yt-proxified() {
   done
 }
 
+# Download several YT videos
 yts() {
   echo $@ \
   | xs -d\  youtube-dl -f 243+139 https://www.youtube.com/watch?v={}
