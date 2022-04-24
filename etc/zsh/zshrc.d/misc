@@ -143,11 +143,19 @@ alias distcc-mon="DISTCC_DIR=/var/tmp/portage/.distcc distccmon-text 3"
 alias distcc-mon-h="DISTCC_DIR=/home/.portage/tmp/portage/.distcc distccmon-text 3"
 
 rs() {
-  local app="redshift"
-  which gammastep &>/dev/null && app="gammastep"
-  tty | grep -q tty && local use_drm=1
+  if command -v gammastep &>/dev/null; then
+    local app="gammastep"
+  elif command -v redshift &>/dev/null; then
+    local app="redshift"
+  else
+    echo "Sorry, can't\!"
+    return 1
+  fi
+  if tty | grep -q tty || [[ "$TERM" == "screen.linux" ]]; then
+    local use_drm=1
+  fi
   pkill $app
-  $app ${use_drm:+-m drm} ${1:+-PO ${1}00K} ${1:--x} ${2:+-g $2} &
+  $app ${use_drm:+-mdrm} ${1:+-PO ${1}00K} ${1:--x} ${2:+-g $2} &
   disown
 }
 
