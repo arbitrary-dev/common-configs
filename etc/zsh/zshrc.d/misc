@@ -57,8 +57,35 @@ alias vp="vim ~/.zprofile"
 alias sr='. /etc/profile;. /etc/zsh/zshrc;. ~/.zshrc'
 alias svr="sudo vim /etc/zsh/zshrc.d/misc"
 
-xc() { wl-copy 2>/dev/null || xclip -selection clipboard; }
-xp() { wl-paste 2>/dev/null || xclip -selection clipboard -o; }
+# Copy to clipboard
+xc() {
+  if command -v wl-copy &>/dev/null; then
+    wl-copy 2>/dev/null
+  elif command -v xclip &>/dev/null; then
+    xclip -selection clipboard 2>/dev/null
+  elif command -v termux-clipboard-set &>/dev/null; then
+    termux-clipboard-set 2>/dev/null
+  elif command -v pbcopy &>/dev/null; then
+    pbcopy
+  else
+    return 1
+  fi
+}
+
+# Paste from clipboard
+xp() {
+  if command -v wl-paste &>/dev/null; then
+    wl-paste 2>/dev/null
+  elif command -v xclip &>/dev/null; then
+    xclip -selection clipboard -o 2>/dev/null
+  elif command -v termux-clipboard-get &>/dev/null; then
+    termux-clipboard-get 2>/dev/null
+  elif command -v pbpaste &>/dev/null; then
+    pbpaste
+  else
+    return 1
+  fi
+}
 
 alias ecurr="sudo watch -ctn 30 genlop -c"
 alias ehist="sudo genlop -it"
