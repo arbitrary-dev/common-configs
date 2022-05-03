@@ -39,7 +39,8 @@ ytp() {
   while true; do
     local p="${proxies[`shuf -i1-${#proxies} -n1`]}"
     echo -n "\nTrying with $p...\n"
-    yt -f 243+249 --proxy "$p" https://www.youtube.com/watch?v=$1 \
+    #yt -f 243+249 --proxy "$p" https://www.youtube.com/watch?v=$1 \
+    yt --proxy "$p" "$@" \
     && break
   done
 }
