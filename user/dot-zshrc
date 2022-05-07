@@ -119,10 +119,10 @@ ls-files() {
 
 todo() {
   local t=$(join_with - $0 $*)
-  vim $MY_DOCS/_misc/"$t"
+  vim $MY_DOCS/_misc/"$t".txt
 }
-
-notes() { vim $MY_DOCS/_misc/notes; }
+notes() { vim $MY_DOCS/_misc/notes.md; }
+recipes() { vim $MY_DOCS/recipes/README.md; }
 
 alias wine32="WINEARCH=win32 WINEPREFIX=~/.wine32 wine"
 alias winecfg32="WINEARCH=win32 WINEPREFIX=~/.wine32 winecfg"
