@@ -178,6 +178,7 @@ bt-restart() {
   sudo rc-service bluealsa start
 }
 
+my-du() { du -hd1 -BM ${1:-.} | sort -n; }
 my-ping() { while ! ping ${1:-gentoo.org}; do sleep 3; done }
 my-sdiff() {
   local S
