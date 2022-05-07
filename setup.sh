@@ -37,6 +37,11 @@ if [ -n "$TERMUX_VERSION" ]; then
   echo "Stowing .gitconfig ..."
   stow --target $HOME/.gitconfig etc/gitconfig
   echo "Done!"
+
+  echo "Stowing .termux/ ..."
+  mkdir -p $HOME/.termux
+  stow --target $HOME/.termux termux
+  echo "Done!"
 else
   echo "Stowing /etc..."
   sudo stow --target /etc etc
