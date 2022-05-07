@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if ! which stow >/dev/null 2>&1; then
+if ! command -v stow >/dev/null 2>&1; then
   echo "Stow not found! Please install it."
   exit 1
 fi
@@ -15,24 +15,42 @@ if [ "`dirname $0`" != "." ]; then
   exit 1
 fi
 
-echo "Stowing /etc..."
-sudo stow --target /etc etc
-if ! grep -q zshrc.d /etc/zsh/zshrc; then
-  sudo sh -c \
-    'printf "\nfor f in /etc/zsh/zshrc.d/*; do . \$f; done\n" >> /etc/zsh/zshrc'
-fi
-echo "Done!"
-
-echo
-echo "Stowing /root..."
-sudo stow --target /root root
-echo "Done!"
-
 echo
 echo "Stowing $HOME..."
 mkdir -p $HOME/.vim
 stow --target $HOME user
 echo "Done!"
+
+if [ -n "$TERMUX_VERSION" ]; then
+  echo "Stowing zshrc.d/ ..."
+  mkdir -p $HOME/.zshrc.d
+  stow --target $HOME/.zshrc.d etc/zsh/zshrc.d
+  if ! grep -q ZSHRC_D $HOME/.zshenv; then
+    echo "export ZSHRC_D=$HOME/.zshrc.d" >> $HOME/.zshenv
+  fi
+  echo "Done!"
+
+  echo "Stowing vimrc.local ..."
+  stow --target $HOME/.vim etc/vim
+  echo "Done!"
+
+  echo "Stowing .gitconfig ..."
+  stow --target $HOME/.gitconfig etc/gitconfig
+  echo "Done!"
+else
+  echo "Stowing /etc..."
+  sudo stow --target /etc etc
+  if ! grep -q zshrc.d /etc/zsh/zshrc; then
+    sudo sh -c \
+      'printf "\nfor f in /etc/zsh/zshrc.d/*; do . \$f; done\n" >> /etc/zsh/zshrc'
+  fi
+  echo "Done!"
+
+  echo
+  echo "Stowing /root..."
+  sudo stow --target /root root
+  echo "Done!"
+fi
 
 # Fixes bug #XXX in Stow
 if find -name .zshrc -execdir mv {} dot-zshrc \; -print0 | grep -qz .; then

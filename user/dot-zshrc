@@ -1,3 +1,9 @@
+if [[ -d "${ZSHRC_D:-/etc/zsh/zshrc.d}" ]]; then
+  for f in "${ZSHRC_D:-/etc/zsh/zshrc.d}"/*; do
+    source $f
+  done
+fi
+
 export PS1='%B%F{green}'$PS1
 
 alias hanako-fm="mpv https://musicbird.leanstream.co/JCB069-MP3"
@@ -592,5 +598,3 @@ purchase() {
   done
   echo "Total: ${total}€"
 }
-
-[ -f ~/.zprofile ] && source ~/.zprofile

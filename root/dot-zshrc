@@ -1,3 +1,9 @@
+if [[ -d "${ZSHRC_D:-/etc/zsh/zshrc.d}" ]]; then
+  for f in "${ZSHRC_D:-/etc/zsh/zshrc.d}"/*; do
+    source $f
+  done
+fi
+
 export PS1='%B%F{red}'$PS1
 
 export NUMCPUS=$(nproc)
@@ -66,5 +72,3 @@ efi-sign() {
     echo "Signed: $out"
   fi
 }
-
-[ -f ~/.zprofile ] && source ~/.zprofile
