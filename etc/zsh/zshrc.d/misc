@@ -53,9 +53,9 @@ export EDITOR="vim"
 export LESS="-iSXFR"
 
 alias vr="vim ~/.zshrc"
-alias vp="vim ~/.zprofile"
-alias sr='. /etc/profile;. /etc/zsh/zshrc;. ~/.zshrc'
-alias svr="sudo vim /etc/zsh/zshrc.d/misc"
+alias ve="vim ~/.zshenv"
+alias sr='. /etc/profile;. ~/.zshenv;. ~/.zshrc'
+svr() { vim ${ZSHRC_D:-/etc/zsh/zshrc.d}/misc; }
 
 # Copy to clipboard
 xc() {
