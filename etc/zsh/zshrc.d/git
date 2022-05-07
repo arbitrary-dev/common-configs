@@ -16,6 +16,7 @@ git-fix-ownership() {
   | xargs chown $user:$user
 }
 
+# Git configure user
 gcu() {
   local user
   local email
@@ -189,6 +190,9 @@ alias gma="git merge --abort"
 alias gmc="git merge --continue"
 alias gmt="git mergetool"
 
+# Git ignore file
 alias gig="git update-index --assume-unchanged"
+# Git unignore file
 alias gug="git update-index --no-assume-unchanged"
+# Git list ignored files
 alias gli='git ls-files -v `git rev-parse --show-toplevel` | grep ^[a-z]'
