@@ -7,6 +7,12 @@ alias yt="youtube-dl"
 alias ytw="mpv --ytdl-format='worstvideo[height>=240]+worstaudio'"
 # YT music
 ytm() {
+  if [[ -z "$@" && -z "$YTM_DEF_PLAYLIST" ]]; then
+    echo "No YTM_DEF_PLAYLIST specified!"
+    return 1
+  fi
+
+  local format="bestaudio"
   while true; do
     case "$1" in
       w)  local format="worstaudio" ;;
@@ -17,10 +23,10 @@ ytm() {
   done
 
   mpv --no-video \
-      ${format:+--ytdl-format=$format} \
+      --ytdl-format=$format${bigcache-[filesize<14M]} \
       ${bigcache---demuxer-max-bytes=5MiB} \
-      ${bigcache+--profile=bigcache} \
-      "${@:-$YTM_DEF_PLAYLIST}"
+      ${bigcache+--demuxer-max-bytes=150MiB} \
+      "${=@:---shuffle $YTM_DEF_PLAYLIST}"
 }
 # List available formats for YT video
 alias ytf="youtube-dl --list-formats"
