@@ -24,18 +24,20 @@ echo "Done!"
 if [ -n "$TERMUX_VERSION" ]; then
   echo "Stowing zshrc.d/ ..."
   mkdir -p $HOME/.zshrc.d
-  stow --target $HOME/.zshrc.d etc/zsh/zshrc.d
-  if ! grep -q ZSHRC_D $HOME/.zshenv; then
+  stow --target $HOME/.zshrc.d --dir etc/zsh zshrc.d
+  if [ ! -f $HOME/.zshenv ] || ! grep -q ZSHRC_D $HOME/.zshenv; then
     echo "export ZSHRC_D=$HOME/.zshrc.d" >> $HOME/.zshenv
   fi
   echo "Done!"
 
   echo "Stowing vimrc.local ..."
-  stow --target $HOME/.vim etc/vim
+  stow --target $HOME/.vim --dir etc vim
   echo "Done!"
 
   echo "Stowing .gitconfig ..."
-  stow --target $HOME/.gitconfig etc/gitconfig
+  [ -f $HOME/.gitconfig ] && mv $HOME/{.,}gitconfig
+  stow --target $HOME --dir etc gitconfig
+  mv $HOME/{,.}gitconfig
   echo "Done!"
 
   echo "Stowing .termux/ ..."
