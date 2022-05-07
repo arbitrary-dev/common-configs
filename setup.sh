@@ -35,9 +35,9 @@ if [ -n "$TERMUX_VERSION" ]; then
   echo "Done!"
 
   echo "Stowing .gitconfig ..."
-  [ -f $HOME/.gitconfig ] && mv $HOME/{.,}gitconfig
-  stow --target $HOME --dir etc gitconfig
-  mv $HOME/{,.}gitconfig
+  [ -f $HOME/.gitconfig ] && mv $HOME/.gitconfig etc/gitconfig
+  rm -rf $HOME/.gitconfig
+  ln -sv $PWD/etc/gitconfig $HOME/.gitconfig
   echo "Done!"
 
   echo "Stowing .termux/ ..."
