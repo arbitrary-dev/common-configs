@@ -579,4 +579,18 @@ awk-upd-csv-vals() {
 	}'
 }
 
+purchase() {
+  local total=0
+  while read a b name; do
+    if [[ "$a" == *g ]]; then
+      local mass=${a%g}
+    else
+      local mass=`bc <<< "scale=2;$a*1000/$b"`
+    fi
+    echo "${mass}g of \"$name\""
+    total=`bc <<< "scale=2;$total + $b*$mass/1000"`
+  done
+  echo "Total: ${total}€"
+}
+
 [ -f ~/.zprofile ] && source ~/.zprofile
