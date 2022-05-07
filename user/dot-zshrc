@@ -4,6 +4,7 @@ alias hanako-fm="mpv https://musicbird.leanstream.co/JCB069-MP3"
 
 alias yt="youtube-dl"
 # YouTube watch
+# TODO gnome-session-inhibit --inhibit idle:suspend
 alias ytw="mpv --ytdl-format='worstvideo[height>=240]+worstaudio'"
 # YT music
 ytm() {
