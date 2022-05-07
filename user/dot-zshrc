@@ -67,8 +67,15 @@ alias sway-list-windows="swaymsg -t get_tree | grep app_id"
 alias m=memo
 alias me="memo --edit"
 
+# Start SSH agent
 alias ssha='eval "`ssh-agent -s`"'
+# Kill SSH agent
 alias sshk='ssh-agent -k'
+# Setup SSH terminal
+ssht() {
+  ssh $1 mkdir -p .terminfo/r
+  scp /usr/share/terminfo/r/rxvt-unicode-256color $1:.terminfo/r
+}
 
 vi() {
   arr=(${(s/:/)@})
@@ -389,11 +396,6 @@ sbtv-ito() {
 
 jnote() {
   docker run -v "$PWD":/home/jovyan/work -p 8888:8888 jupyter/scipy-notebook
-}
-
-setup-ssh-terminal() {
-  ssh $1 mkdir -p .terminfo/r
-  scp /usr/share/terminfo/r/rxvt-unicode-256color $1:.terminfo/r
 }
 
 # Scala Metals
