@@ -134,7 +134,6 @@ alias rn="perl-rename"
 alias shtd="echo 'Shutdown enqueued...'; sudo shutdown -h"
 alias xb="sudo xb"
 alias xs="xargs -I{}"
-my-ping() { while ! ping ${1:-gentoo.org}; do sleep 3; done }
 
 alias df="df -h"
 alias du="du -h"
@@ -179,6 +178,7 @@ bt-restart() {
   sudo rc-service bluealsa start
 }
 
+my-ping() { while ! ping ${1:-gentoo.org}; do sleep 3; done }
 my-sdiff() {
   local S
   for i in "$@"; do
