@@ -8,12 +8,15 @@ if filereadable(expand('~/.vim/autoload/plug.vim'))
   " Support for opening the files at specified:line
   Plug 'bogado/file-line'
 
+  " Vertical alignment of text
   Plug 'godlygeek/tabular'
 
+  " Git
   Plug 'tpope/vim-fugitive'
   map <silent> <leader>gb :Git blame<CR>
   map <silent> <leader>gd :Gvdiff HEAD<CR>
 
+  " Files explorer
   Plug 'scrooloose/nerdtree'
   map <silent> <leader>t :NERDTreeFind<CR>
   let NERDTreeIgnore=['^target$[[dir]]']
@@ -23,10 +26,11 @@ if filereadable(expand('~/.vim/autoload/plug.vim'))
   Plug 'derekwyatt/vim-scala'
   au BufRead,BufNewFile *.sbt set filetype=scala
 
-  " coc.nvim
+  " LSP
   Plug 'neoclide/coc.nvim', {'branch': 'release'} \
   | source ~/.vim/coc-nvim-mappings.vim
 
+  " Ident guides
   Plug 'nathanaelkane/vim-indent-guides'
   let g:indent_guides_enable_on_vim_startup = 1
   let g:indent_guides_auto_colors = 0
