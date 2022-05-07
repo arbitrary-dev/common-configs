@@ -16,10 +16,12 @@ endif
 set number
 set nowrap
 set smartindent expandtab sw=2 ts=2 sts=2
-set hidden
 set clipboard=unnamedplus
 set backspace=indent,eol,start
 set textwidth=80 colorcolumn=80
+
+" Allow switching between modified buffers
+set hidden
 
 " Enables per file VIM configuration
 set modeline
@@ -100,8 +102,7 @@ function ScalaSpec()
     exec ':edit ' . f
   endif
 endfunction
-
-map <silent> <Leader>ss :call ScalaSpec()<CR>
+map <silent> <leader>ss :call ScalaSpec()<CR>
 
 syntax on
 filetype plugin indent on
