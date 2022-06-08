@@ -538,7 +538,20 @@ uc-ext() {
   local ext=$1
   local ver=${2:-97.0.4692.71}
 
-  [ -z "$2" ] && echo "Assuming ungoogled-chromium $ver"
+  if [ -z "$2" ]; then
+    read ans?"Are you using ungoogled-chromium $ver? "
+    case "$ans" in
+      y|Y) : ;;
+      *)
+        if [[ "$ans" =~ ^[0-9.]+$ ]]; then
+          ver="$ans"
+        else
+          echo "Please specify a version!"
+          return 1
+        fi
+        ;;
+    esac
+  fi
 
   xdg-open "https://clients2.google.com/service/update2/crx?response=redirect&acceptformat=crx2,crx3&prodversion=$ver&x=id%3D$ext%26installsource%3Dondemand%26uc"
 }
