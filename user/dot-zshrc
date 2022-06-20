@@ -10,7 +10,6 @@ alias hanako-fm="mpv https://musicbird.leanstream.co/JCB069-MP3"
 
 alias yt="youtube-dl"
 # YouTube watch
-# TODO gnome-session-inhibit --inhibit idle:suspend
 ytw() {
   local format="--ytdl-format=worstvideo[height>=240]+worstaudio"
   if (( ! $# )); then
@@ -25,7 +24,13 @@ ytw() {
     set -A argv --ytdl-raw-options=yes-playlist=,cookies="$c" \
                 https://youtube.com/playlist?list=WL
   fi
-  mpv "$format" "${=@}"
+  if command -v gnome-session-inhibit &>/dev/null; then
+    # Temporary prevents going to sleep on PinePhone
+    gnome-session-inhibit --inhibit idle:suspend \
+      mpv "$format" "${=@}"
+  else
+    mpv "$format" "${=@}"
+  fi
 }
 # YT music
 ytm() {
