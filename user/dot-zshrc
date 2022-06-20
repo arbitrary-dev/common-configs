@@ -11,7 +11,22 @@ alias hanako-fm="mpv https://musicbird.leanstream.co/JCB069-MP3"
 alias yt="youtube-dl"
 # YouTube watch
 # TODO gnome-session-inhibit --inhibit idle:suspend
-alias ytw="mpv --ytdl-format='worstvideo[height>=240]+worstaudio'"
+ytw() {
+  local format="--ytdl-format=worstvideo[height>=240]+worstaudio"
+  if (( ! $# )); then
+    if [ -z "$YTW_COOKIES" ]; then
+      echo "Please set YTW_COOKIES!"
+      return 1
+    fi
+    local c="/tmp/.ytw-cookies"
+    if [ ! -f "$c" ]; then
+      echo $YTW_COOKIES | basenc --decode --base64 | gunzip > "$c"
+    fi
+    set -A argv --ytdl-raw-options=yes-playlist=,cookies="$c" \
+                https://youtube.com/playlist?list=WL
+  fi
+  mpv "$format" "${=@}"
+}
 # YT music
 ytm() {
   if [[ -z "$@" && -z "$YTM_DEF_PLAYLIST" ]]; then
