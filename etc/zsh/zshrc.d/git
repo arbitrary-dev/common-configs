@@ -16,10 +16,10 @@ git-fix-ownership() {
   | xargs chown $user:$user
 }
 
-# Git configure user
-#
-# New users could be added in /etc/git-users
-# or whatever $GIT_USERS points to.
+## Git configure user.
+ #
+ # New users could be added in /etc/git-users
+ # or whatever $GIT_USERS points to.
 gcu() {
   if [[ -z "$1" ]]; then
     echo "Specify a user!"
@@ -28,17 +28,12 @@ gcu() {
 
   local users=${GIT_USERS:-/etc/git-users}
 
-  local creds=($(
-    grep ^$1 $users | cut -d\  -f2-
-  ))
+  grep ^$1 $users | cut -f2- | IFS=$'\t' read user email
 
-  if (( $#creds != 2 )); then
+  if (( $? )); then
     echo "There's no such user '$1' in $users !"
     return 1
   fi
-
-  local user="${creds[1]}"
-  local email="${creds[2]}"
 
   if git config user.name "$user" \
      && git config user.email "$email"
