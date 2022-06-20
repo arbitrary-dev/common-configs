@@ -32,7 +32,7 @@ ytw() {
     mpv "$format" "${=@}"
   fi
 }
-# YT music
+# YouTube music
 ytm() {
   if [[ -z "$@" && -z "$YTM_DEF_PLAYLIST" ]]; then
     echo "No YTM_DEF_PLAYLIST specified!"
