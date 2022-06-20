@@ -611,3 +611,18 @@ purchase() {
   done
   echo "Total: ${total}€"
 }
+
+## Converts raw cookies copied from Chrome into Netscape format.
+ #
+ # In Chrome: F12 → Application → Storage → Cookies
+awk-cookies-txt() {
+  awk '
+    BEGIN {
+      print "# Netscape HTTP Cookie File"
+    }
+    {
+      sub(/^[^.]/,".&",$3)
+      print $3"\tTRUE\t/\tTRUE\t0\t"$1"\t"$2
+    }
+  '
+}
