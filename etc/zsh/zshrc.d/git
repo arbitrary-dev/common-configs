@@ -108,17 +108,17 @@ alias gf="git fetch"
 alias gpl="git pull"
 
 gfco() {
-  local ref=("$1")
-
-  [[ "$ref" =~ '^INT-[0-9]+$' ]] \
-  && ref=(`git remote show origin | grep -o "\S*$ref\S*" | sort -u`)
+  local ref=(`git remote show origin | grep -o "\S*$1\S*" | sort -u`)
 
   if (( ${#ref} > 1 )); then
     echo "Which one exactly?"
     for r in $ref; do echo $r; done
-  else
+  elif (( ${#ref} == 1 )); then
     gf origin $ref \
     && gco origin/$ref
+  else
+    echo "Unable to find any remote branches for \"$1\"."
+    return 1
   fi
 }
 
