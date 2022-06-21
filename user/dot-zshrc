@@ -496,9 +496,9 @@ metals() {
   elif [[ -n "$1" && ! -f "${file%:*}" ]]; then
     local fs
     if [[ "${file%:*}" =~ [A-Z] ]]; then
-      fs=(`ag --case-sensitive -g "\b${file%:*}\b"`)
+      fs=(`find . -path "*${file%:*}*scala"`)
     else
-      fs=(`ag -g "${file%:*}"`)
+      fs=(`find . -ipath "*${file%:*}*scala"`)
     fi
     if (( $#fs > 1 )); then
       for f in $fs; do echo $f; done
