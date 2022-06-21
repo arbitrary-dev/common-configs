@@ -39,6 +39,9 @@ stty -ixon
 # Fixes newline issues in terminal with %'s
 stty sane
 
+# Usage: p1 < patchfile
+alias p1="patch -p1"
+
 setup-distcc() {
   [[ $PATH != *distcc* ]] \
   && export PATH="/usr/lib/distcc/bin:${PATH}"
@@ -52,9 +55,9 @@ setup-ccache() {
 export EDITOR="vim"
 export LESS="-iSXFR"
 
-alias vr="vim ~/.zshrc"
-alias ve="vim ~/.zshenv"
-alias sr='. /etc/profile;. ~/.zshenv;. ~/.zshrc'
+alias sr='. /etc/profile;. ~/.zshrc;. ~/.zshenv 2> /dev/null'
+alias vr="vim ~/.zshrc && sr"
+alias ve="vim ~/.zshenv && sr"
 svr() { vim ${ZSHRC_D:-/etc/zsh/zshrc.d}/misc; }
 
 # Copy to clipboard
@@ -95,7 +98,11 @@ alias eclnd="sudo eclean-dist --deep --fetch-restricted"
 esync() {
   local sync_log="/tmp/.emaint.log"
 
-  if sudo sh -c "printf 'Syncing... '; emaint sync -a &> $sync_log"; then
+  if sudo sh -c "
+    printf 'Syncing... '
+    emaint sync ${1:+-r} ${1:--a} -a &> $sync_log
+  "
+  then
     echo "done"
   else
     echo "FAILED $sync_log"
@@ -134,6 +141,8 @@ alias rn="perl-rename"
 alias shtd="echo 'Shutdown enqueued...'; sudo shutdown -h"
 alias xb="sudo xb"
 alias xs="xargs -I{}"
+alias mc="sudo make menuconfig"
+alias mco="sudo make oldconfig"
 
 alias df="df -h"
 alias du="du -h"

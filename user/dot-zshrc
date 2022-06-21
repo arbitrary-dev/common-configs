@@ -66,12 +66,13 @@ alias ytv="youtube-dl -f bestvideo+bestaudio"
 ytp() {
   local proxies=(`
     curl -s https://raw.githubusercontent.com/clarketm/proxy-list/master/proxy-list.txt \
-    | grep RU \
+    | grep -E "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+" \
     | sed -E -e 's/([^ ]+) [^S]*(S?).*/\2\1/' -e 's_^S_https://_'
   `)
   while true; do
     local p="${proxies[`shuf -i1-${#proxies} -n1`]}"
     echo -n "\nTrying with $p...\n"
+    #mpv --ytdl-format="[height<=360]" --ytdl-raw-options=proxy="$p" $1 \
     #yt -f 243+249 --proxy "$p" https://www.youtube.com/watch?v=$1 \
     yt --proxy "$p" "$@" \
     && break
@@ -84,7 +85,9 @@ yts() {
   | xs -d\  youtube-dl -f 243+139 https://www.youtube.com/watch?v={}
 }
 
-alias ag-todos="ag '(((//|/?\*|#) )|\*\*|)\b(TODO|FIXME)\b(?!(:|.*INT-\d)).*$'"
+# All todos in code
+alias at="rg --pcre2 '(((//|/?\*|#) )|\*\*|)\b(TODO|FIXME)\b(?!(:|.*INT-\d)).*$'"
+
 alias am="alsamixer"
 alias feh="feh --auto-rotate --geometry 640x480 --image-bg black -Z -."
 alias lp-a4="lp -o fit-to-page -o PageSize=A4 -o PageRegion=A4 -o PaperDimension=A4 -o ImageableArea=A4"
@@ -279,6 +282,10 @@ gnumeric-txt() {
     -T Gnumeric_stf:stf_assistant \
     -O "separator='	' format=preserve" \
     $1 fd://1
+}
+
+mnt-resize() {
+  sudo mount -o remount,size=$2 $1
 }
 
 mnt() {

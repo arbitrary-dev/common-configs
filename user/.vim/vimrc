@@ -28,7 +28,7 @@ if filereadable(expand('~/.vim/autoload/plug.vim'))
 
   " LSP
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
-  source ~/.vim/coc-nvim-mappings.vim
+  \ | source ~/.vim/coc-nvim-mappings.vim
 
   " Ident guides
   Plug 'nathanaelkane/vim-indent-guides'
@@ -47,5 +47,5 @@ if filereadable(expand('~/.vim/autoload/plug.vim'))
 endif
 
 if filereadable(expand("~/.vim/vimrc.local"))
-    source(expand("~/.vim/vimrc.local"))
-  endif
+  source(expand("~/.vim/vimrc.local"))
+endif

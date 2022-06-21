@@ -9,6 +9,8 @@ git-unshallow() {
 }
 
 alias git-reset-tree="git read-tree --reset -u HEAD"
+alias git-update-tree="git read-tree -m -u HEAD"
+
 git-fix-ownership() {
   local user=$1
   cd /
@@ -95,14 +97,11 @@ alias gcpc="git cherry-pick --continue"
 
 alias grvt="git revert"
 alias grvta="git revert --abort"
-alias grvta="git revert --abort"
 
 gls() { git ls-tree --full-tree -r HEAD | cut -f2; }
 alias glsr="git ls-remote --heads origin | cut -d/  -f3-"
 # List a tree of files managed by the repo
 alias glst="git ls-tree -r --name-only HEAD | tree --fromfile"
-
-alias git-update-tree="git read-tree -m -u HEAD"
 
 alias gp="git push"
 alias gf="git fetch"
