@@ -531,15 +531,22 @@ rec-screen() {
   local out=~"/Videos/_unsorted/screen-`date +%Y-%m-%d-%H%M%S`.mp4"
   mkdir -p "`dirname $out`"
 
-  # TODO utilize xrectsel
+  # Screen resolution
+  local sc=(`xrandr | sed -nE "s/.*current ([0-9]+) x ([0-9]+).*/\1 \2/p;q"`)
+
+  # Screen capture rectangle
+  local w=800
+  local h=600
+  local x=$((${sc[1]} - $w - 60))
+  local y=$((${sc[2]} - $h - 80))
 
   # The range of the CRF scale is 0–51, where 0 is lossless, 23 is the default,
   # and 51 is worst quality possible. A lower value generally leads to higher
   # quality, and a subjectively sane range is 17–28. Consider 17 or 18 to be
   # visually lossless or nearly so; it should look the same or nearly the same
   # as the input but it isn't technically lossless.
-  ffmpeg -y -f x11grab -draw_mouse 0 -show_region 1 -video_size 800x600 \
-    -framerate 25 -i :0.0+1060,30 \
+  ffmpeg -y -f x11grab -draw_mouse 0 -show_region 1 -video_size ${w}x${h} \
+    -framerate 25 -i :0.0+${x},${y} \
     -f pulse -i $adev \
     -c:a libfdk_aac -profile:a aac_he -ar 44100 -vbr 3 -ac 2 \
     -c:v libx264 -preset:v fast -crf 18 \
