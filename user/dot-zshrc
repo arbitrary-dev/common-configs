@@ -577,28 +577,13 @@ rec-screen() {
 # Set "Always promt for install" in case of issues:
 # chrome://flags/#extension-mime-request-handling
 uc-ext() {
-  if (( $# == 0 )); then
-    echo "Please specify extension ID and ungoogled-chromium version!"
+  if (( ! $# )); then
+    echo "Please specify extension ID!"
     return 1
   fi
 
   local ext=$1
-  local ver=${2:-97.0.4692.71}
-
-  if [ -z "$2" ]; then
-    read ans?"Are you using ungoogled-chromium $ver? "
-    case "$ans" in
-      y|Y) : ;;
-      *)
-        if [[ "$ans" =~ ^[0-9.]+$ ]]; then
-          ver="$ans"
-        else
-          echo "Please specify a version!"
-          return 1
-        fi
-        ;;
-    esac
-  fi
+  local ver=`chromium --version | awk '{print $2}'`
 
   xdg-open "https://clients2.google.com/service/update2/crx?response=redirect&acceptformat=crx2,crx3&prodversion=$ver&x=id%3D$ext%26installsource%3Dondemand%26uc"
 }
