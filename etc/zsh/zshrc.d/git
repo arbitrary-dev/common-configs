@@ -113,7 +113,7 @@ gfco() {
   if (( ${#ref} > 1 )); then
     echo "Which one exactly?"
     for r in $ref; do echo $r; done
-  elif (( ${#ref} == 1 )); then
+  elif (( ${#ref} )); then
     gf origin $ref \
     && gco origin/$ref
   else
