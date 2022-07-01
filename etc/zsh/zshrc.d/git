@@ -158,6 +158,8 @@ gdf() {
   | _recolor_diff \
   | less
 }
+# Git diff between two files
+alias gdff="gdf --no-index"
 gdfno() { gdf --name-only $1 $2 | _shorten-paths; }
 gdfno1() { gdf --name-only $1{^,} | _shorten-paths; }
 alias gdfc="gdf --cached"
