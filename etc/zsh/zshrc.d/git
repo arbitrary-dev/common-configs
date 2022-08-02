@@ -179,12 +179,12 @@ glg() {
 alias gl-all="git log --reflog"
 
 alias gc="git commit"
-alias gcf="gc --fixup"
+gcf() { gc --fixup ${1:-HEAD}; }
 alias gcm="gc -m"
 
 alias gr="git rebase"
-alias gri="gr --interactive"
-alias gri-na="gr --interactive --no-autosquash"
+gri() { gr --interactive ${@:-`gmb`}; }
+gri-na() { gr --interactive --no-autosquash ${@:-`gmb`}; }
 alias grc="gr --continue"
 alias gra="gr --abort"
 
@@ -193,6 +193,9 @@ alias gmff="git merge --ff-only"
 alias gma="git merge --abort"
 alias gmc="git merge --continue"
 alias gmt="git mergetool"
+
+# Finds merge base commit between the two
+gmb() { git merge-base ${2:-master} ${1:-HEAD}; }
 
 # Git ignore file
 alias gig="git update-index --assume-unchanged"
