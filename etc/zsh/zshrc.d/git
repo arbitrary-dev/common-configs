@@ -167,14 +167,11 @@ alias gdfc="gdf --cached"
 glg() {
   local query="--all"
   for a in "$@"; do query+=" --grep=$a"; done
-
-  # First try local alias for a customized indentation per project.
-  git lg ${=query} 2>/dev/null
-
-  # Then fallback to the default.
-  [[ $? == 1 ]] && git log ${=query} --graph --abbrev-commit --decorate --date=format:'%m-%d-%Y %H:%M' \
---format=format:'%C(cyan)%h%C(reset) %C(red)%cd (%cr)%C(reset)%C(green)%d%C(reset)%n'\
-'        %C(reset)%s %C(red)%an%+N' --exclude refs/stash
+  local indent="`git log --oneline -1 | sed 's/ .*//;s/./ /g'`"
+  git log ${=query} --graph --abbrev-commit --decorate --exclude refs/stash \
+--date=format:'%m-%d-%Y %H:%M' \
+--format=format:"%C(cyan)%h%C(reset) %C(red)%cd (%cr)%C(reset)%C(green)%d%C(reset)%n"\
+"$indent %C(reset)%s %C(red)%an%+N"
 }
 alias gl-all="git log --reflog"
 
