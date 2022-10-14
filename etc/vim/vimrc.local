@@ -176,6 +176,8 @@ hi NonText ctermfg=darkgray
 hi SignColumn ctermbg=none
 hi Pmenu ctermfg=lightgray ctermbg=237
 exe 'hi PmenuSel ctermfg=black ctermbg=' . g:hcolor
+hi clear CocMenuSel
+hi link CocMenuSel PmenuSel
 
 hi scalaKeywordModifier ctermfg=yellow
 hi scalaUnimplemented ctermfg=black ctermbg=yellow
