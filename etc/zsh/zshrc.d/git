@@ -160,8 +160,8 @@ gdf() {
 }
 # Git diff between two files
 alias gdff="gdf --no-index"
-gdfno() { gdf --name-only $1 $2 | _shorten-paths; }
-gdfno1() { gdf --name-only $1{^,} | _shorten-paths; }
+gdfno() { gdf --name-only ${1:-master} ${2:-HEAD} | _shorten-paths; }
+gdfno1() { gdf --name-only ${1:-HEAD}{^,} | _shorten-paths; }
 alias gdfc="gdf --cached"
 
 glg() {
