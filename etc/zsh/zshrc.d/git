@@ -125,6 +125,7 @@ gfco() {
 alias gt="git tag"
 gtr() { git ls-remote --tags ${1:-origin}; }
 gtf() { git fetch --tags ${1:-origin} ${2:-master}; }
+gtfp() { git fetch --prune ${1:-origin} +refs/tags/*:refs/tags/*; }
 
 _diff_opts=(
   --irreversible-delete
