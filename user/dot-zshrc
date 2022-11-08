@@ -226,28 +226,6 @@ btc() {
   amixer -D bluealsa sget $ctl | grep -oE [0-9]+%
 }
 
-# Connect BT device
-bt() {
-  if (( ! $# )); then
-    echo "Choose device to connect to:"
-    bluetoothctl <<< devices | grep Device | cut -d\  -f3-
-    return
-  fi
-
-  # Connect
-  local dev=`bluetoothctl <<< devices | grep -i "device.*$1" | cut -d\  -f2-`
-  dev=(${(s/ /)dev})
-  echo "Connecting to ${dev[@]:1}..."
-  (cat <<EOF && sleep 5) | bluetoothctl
-power on
-connect ${dev[1]}
-EOF
-
-  # Set volume
-  printf "Setting bluetooth volume to 75%%... "
-  btv 75% >/dev/null && echo "OK"
-}
-
 nc() {
   pgrep mpd >/dev/null || mpd
   ncmpcpp
