@@ -19,6 +19,8 @@ ytw() {
       --no-video)
           format="worstaudio"
           shift ;;
+      -f) format="$2"
+          shift 2 ;;
       -*) flags+=($1)
           shift ;;
       *)  break ;;
@@ -42,7 +44,7 @@ ytw() {
     gnome-session-inhibit --inhibit idle:suspend \
       mpv --ytdl-format="$format" "${=flags[@]}" "${=@}"
   else
-    mpv --ytdl-format="$format" ${=flags[@]} "${=@}"
+    mpv --ytdl-format="$format" ${=flags[@]} "$@"
   fi
 }
 # YouTube music
