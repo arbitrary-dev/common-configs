@@ -1,7 +1,7 @@
 require('plugins')
 require('nvim-metals')
 
-local opt = vim.opt_global
+local opt = vim.opt
 
 opt.number = true
 opt.wrap = false
