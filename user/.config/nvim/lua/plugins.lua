@@ -1,10 +1,24 @@
-vim.cmd([[packadd packer.nvim]])
-return require('packer').startup(function()
+local cmd = vim.cmd
+--
+----------------------------------
+-- PLUGINS -----------------------
+----------------------------------
+cmd([[packadd packer.nvim]])
+require("packer").startup(function(use)
 
-  use 'wbthomason/packer.nvim'
-  use 'kyazdani42/nvim-tree.lua'
+  use 'preservim/nerdtree'
 
-  -- nvim-metals
+  use {
+    'nvim-treesitter/nvim-treesitter',
+    run = function() require('nvim-treesitter.install').update({ with_sync = true }) end,
+  }
+
+  use {
+    'nvim-telescope/telescope.nvim',
+    requires = { {'nvim-lua/plenary.nvim'} }
+  }
+
+  use({ "wbthomason/packer.nvim", opt = true })
 
   use({
     "hrsh7th/nvim-cmp",

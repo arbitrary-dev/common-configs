@@ -42,25 +42,36 @@ end
 ----------------------------------
 -- global
 vim.opt_global.completeopt = { "menuone", "noinsert", "noselect" }
-vim.opt_global.shortmess:remove("F"):append("c")
+-- Not needed anymore?
+--vim.opt_global.shortmess:remove("F"):append("c")
 
 -- LSP mappings
-map("n", "gD", "<cmd>lua vim.lsp.buf.definition()<CR>")
+map("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>")
 map("n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>")
 map("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<CR>")
 map("n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>")
-map("n", "gds", "<cmd>lua vim.lsp.buf.document_symbol()<CR>")
-map("n", "gws", "<cmd>lua vim.lsp.buf.workspace_symbol()<CR>")
+map("n", "gu", "<cmd>lua vim.lsp.codelens.run()<CR>")
+map("n", "<space>o", "<cmd>lua vim.lsp.buf.document_symbol()<CR>")
+map("n", "<space>s", [[<cmd>lua require("telescope.builtin").lsp_dynamic_workspace_symbols()<CR>]])
+map("n", "<space>f", [[<cmd>lua require("telescope.builtin").find_files()<CR>]])
+map("n", "<space>g", [[<cmd>lua require("telescope.builtin").live_grep()<CR>]])
+map("n", "<space>b", [[<cmd>lua require("telescope.builtin").buffers()<CR>]])
+-- Add `disable_coordinates=true` when the issue is fixed:
+-- https://github.com/nvim-telescope/telescope.nvim/issues/2219
+map("n", "<leader>at", [[<cmd>lua require("telescope.builtin").grep_string({prompt_title="Pending TODO's & FIXME's",search="\\b(TODO|FIXME)\\b(?!(:|.*INT-\\d))",use_regex=true,path_display={"tail"},additional_args={"--pcre2", "--trim"}})<CR>]])
 map("n", "<leader>cl", [[<cmd>lua vim.lsp.codelens.run()<CR>]])
 map("n", "<leader>sh", [[<cmd>lua vim.lsp.buf.signature_help()<CR>]])
 map("n", "<leader>rn", "<cmd>lua vim.lsp.buf.rename()<CR>")
-map("n", "<leader>f", "<cmd>lua vim.lsp.buf.formatting()<CR>")
+map("n", "<leader>ft", "<cmd>lua vim.lsp.buf.format{async=true}<CR>")
 map("n", "<leader>ca", "<cmd>lua vim.lsp.buf.code_action()<CR>")
-map("n", "<leader>ws", '<cmd>lua require"metals".hover_worksheet()<CR>')
+--map("n", "<leader>ws", '<cmd>lua require"metals".hover_worksheet()<CR>')
 map("n", "<leader>aa", [[<cmd>lua vim.diagnostic.setqflist()<CR>]]) -- all workspace diagnostics
 map("n", "<leader>ae", [[<cmd>lua vim.diagnostic.setqflist({severity = "E"})<CR>]]) -- all workspace errors
 map("n", "<leader>aw", [[<cmd>lua vim.diagnostic.setqflist({severity = "W"})<CR>]]) -- all workspace warnings
 map("n", "<leader>d", "<cmd>lua vim.diagnostic.setloclist()<CR>") -- buffer diagnostics only
+map("n", "<leader>tf", [[<cmd>NERDTreeFind<CR>]])
+map("n", "<leader>tt", [[<cmd>lua require("metals.tvp").toggle_tree_view()<CR>]])
+map("n", "<leader>tr", [[<cmd>lua require("metals.tvp").reveal_in_tree()<CR>]])
 map("n", "[c", "<cmd>lua vim.diagnostic.goto_prev { wrap = false }<CR>")
 map("n", "]c", "<cmd>lua vim.diagnostic.goto_next { wrap = false }<CR>")
 
@@ -73,6 +84,24 @@ map("n", "<leader>dt", [[<cmd>lua require"dap".toggle_breakpoint()<CR>]])
 map("n", "<leader>dso", [[<cmd>lua require"dap".step_over()<CR>]])
 map("n", "<leader>dsi", [[<cmd>lua require"dap".step_into()<CR>]])
 map("n", "<leader>dl", [[<cmd>lua require"dap".run_last()<CR>]])
+
+-- Quickfix list
+map("n", "<leader>co", [[<cmd>copen<CR>]])
+map("n", "<leader>cc", [[<cmd>cclose<CR>]])
+map("n", "<C-j>",      [[<cmd>cnext<CR>]])
+map("n", "<C-k>",      [[<cmd>cprev<CR>]])
+
+-- Buffers
+map("n", "<leader>bw", [[<cmd>bw<CR>]])
+map("n", "<A-j>",      [[<cmd>bn<CR>]])
+map("n", "<A-k>",      [[<cmd>bp<CR>]])
+
+-- Misc
+map("n", "<leader>w", [[<cmd>setlocal wrap!<CR>]])
+map("n", "<leader><leader>", [[<cmd>nohl<CR>]])
+map("n", "<leader>oi", [[<cmd>MetalsOrganizeImports<CR>]])
+map("n", "<C-l>", "2zl")
+map("n", "<C-h>", "2zh")
 
 -- completion related settings
 -- This is similiar to what I use
@@ -131,8 +160,7 @@ metals_config.settings = {
 -- metals_config.init_options.statusBarProvider = "on"
 
 -- Example if you are using cmp how to make sure the correct capabilities for snippets are set
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-metals_config.capabilities = require("cmp_nvim_lsp").update_capabilities(capabilities)
+metals_config.capabilities = require("cmp_nvim_lsp").default_capabilities()
 
 -- Debug settings if you're using nvim-dap
 local dap = require("dap")
@@ -159,6 +187,25 @@ dap.configurations.scala = {
 
 metals_config.on_attach = function(client, bufnr)
   require("metals").setup_dap()
+
+  -- Adds symbol and its references highlighting
+  if client.server_capabilities.documentHighlightProvider then
+    api.nvim_create_augroup("lsp_document_highlight", { clear = true })
+    api.nvim_create_autocmd('CursorHold', {
+      buffer = bufnr,
+      group = 'lsp_document_highlight',
+      callback = vim.lsp.buf.document_highlight
+    })
+    api.nvim_create_autocmd('CursorMoved', {
+      buffer = bufnr,
+      group = 'lsp_document_highlight',
+      callback = vim.lsp.buf.clear_references
+    })
+
+    api.nvim_set_hl(0, 'LspReferenceText', { fg = "#000000", bg = "#FFFFFF", underline = true })
+    api.nvim_set_hl(0, 'LspReferenceRead', { fg = "#000000", bg = "#FFFFFF", underline = true })
+    api.nvim_set_hl(0, 'LspReferenceWrite', { fg = "#000000", bg = "#FFFFFF", underline = true })
+ end
 end
 
 -- Autocmd that will actually be in charging of starting the whole thing
