@@ -227,16 +227,58 @@ btc() {
 }
 
 nc() {
-  pgrep mpd >/dev/null || mpd
+  if rc-service mpd-remote status >/dev/null; then
+    sudo rc-service mpd-remote stop || return 1
+  fi
+  if ! rc-service mpd status >/dev/null; then
+    sudo rc-service mpd start || return 1
+  fi
   ncmpcpp
 }
-mpdr() {
-  mpd --kill 2> /dev/null
-  mpd /etc/mpd-remote.conf
-}
+
 ncr() {
-  pgrep mpd >/dev/null || mpdr
-  nc -c ~/.ncmpcpp/config-remote
+  if ! mount | grep -q "/mnt/music"; then
+    mkdir -p /mnt/music
+    curlftpfs ftp://192.168.1.1/music /mnt/music -o utf8 || return 1
+  fi
+
+  # Keep the FTP connection alive...
+  if mount | grep -qE '^curlftpfs.+ on /mnt/music '; then
+    _keep_alive() {
+      while true; do
+        touch /mnt/music/_playlists
+        sleep 61
+      done
+    }
+    printf "Starting the keep alive workaround... "
+    _keep_alive &
+  fi
+
+  if rc-service mpd status >/dev/null; then
+    sudo rc-service mpd stop || return 1
+  fi
+
+  if ! rc-service mpd-remote status >/dev/null; then
+    sudo rc-service mpd-remote start || return 1
+  fi
+
+  if ! pgrep mpd-mpris >/dev/null; then
+    mpd-mpris &>/dev/null &
+    disown
+  fi
+
+  ncmpcpp -c ~/.config/ncmpcpp/config-remote
+
+  # Stop the keep alive workaround.
+  kill % 2>/dev/null
+}
+
+# Workaround for HDD sleep issue
+ncrr() {
+  sudo rc-service mpd-remote stop
+  pkill -9 curlftpfs
+  umount /mnt/music
+  ncr
 }
 
 discogs() {
