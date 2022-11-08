@@ -24,3 +24,8 @@
   process = git-lfs filter-process
   required = true
   clean = git-lfs clean -- %f
+[safe]
+	directory = /var/db/repos/pf4public
+	directory = /var/db/repos/guru
+	directory = /var/db/repos/alxu
+	directory = /var/db/repos/arbitrary-dev

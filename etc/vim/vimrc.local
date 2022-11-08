@@ -41,6 +41,10 @@ let g:xml_syntax_folding=1
 au FileType xml setlocal foldmethod=syntax
 au FileType perl setlocal sw=4 ts=4 sts=4 et
 
+" Prevents opening of the folds during }{ navigation
+" https://github.com/vim/vim/issues/7134
+set foldopen-=block
+
 set exrc
 set secure
 
@@ -63,10 +67,6 @@ nnoremap <silent> <leader>dg :diffget<CR>
 nnoremap <silent> <leader>w :set wrap!<CR>
 nnoremap <silent> <leader>bw :bp\|bw#<CR>
 nnoremap <silent> <leader>fd :setl fdm=indent<CR>:let &l:fdl=indent('.')/&sw<CR>
-
-" Prevents opening of the folds during }{ navigation
-" https://github.com/vim/vim/issues/7134
-set foldopen-=block
 
 " trailing spaces highlighting
 au FileType *
@@ -160,7 +160,7 @@ exe 'hi ModeMsg ctermfg=black ctermbg=' . g:hcolor
 "hi ErrorMsg ctermfg=yellow ctermbg=red
 
 hi DiffChange ctermfg=black ctermbg=darkred
-hi DiffText ctermfg=white ctermbg=red
+hi DiffText ctermfg=black ctermbg=green
 hi DiffDelete ctermfg=darkgray ctermbg=none
 hi diffRemoved ctermfg=red
 hi DiffAdd ctermfg=black ctermbg=darkgreen
