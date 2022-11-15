@@ -65,8 +65,13 @@ nnoremap <silent> <leader>do :diffoff<CR>
 nnoremap <silent> <leader>dp :diffput<CR>
 nnoremap <silent> <leader>dg :diffget<CR>
 nnoremap <silent> <leader>w :set wrap!<CR>
-nnoremap <silent> <leader>bw :bp\|bw#<CR>
 nnoremap <silent> <leader>fd :setl fdm=indent<CR>:let &l:fdl=indent('.')/&sw<CR>
+
+nnoremap <silent> <leader>bw :bp\|bw#<CR>
+" <Alt+J> but <Esc+J> also :(
+nnoremap <silent> j :bn<CR>
+" <Alt+K> but <Esc+K> also :(
+nnoremap <silent> k :bp<CR>
 
 " trailing spaces highlighting
 au FileType *
@@ -103,6 +108,9 @@ function ScalaSpec()
   endif
 endfunction
 map <silent> <leader>ss :call ScalaSpec()<CR>
+
+" Silently executes provided shell command.
+:command! -nargs=1 Silent execute ':silent !'.<q-args> | execute ':redraw!'
 
 " Enables markdown folding
 let g:markdown_folding = 1

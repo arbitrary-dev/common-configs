@@ -143,6 +143,7 @@ alias xb="sudo xb"
 alias xs="xargs -I{}"
 alias mc="sudo make menuconfig"
 alias mco="sudo make oldconfig"
+alias cal="cal -mn2"
 
 alias df="df -h"
 alias du="du -h"
