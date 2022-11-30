@@ -172,6 +172,8 @@ alias wine32="WINEARCH=win32 WINEPREFIX=~/.wine32 wine"
 alias winecfg32="WINEARCH=win32 WINEPREFIX=~/.wine32 winecfg"
 alias winetricks32="WINEARCH=win32 WINEPREFIX=~/.wine32 winetricks"
 
+# curl -s https://videscentrs.lvgmc.lv/data/search?q=Riga | jq -r 'map(select(.kategorija == "Prognozes"))|.[]|{id: .loc_params|fromjson|.punkts,name: .nosaukums}|@text "\(.id)\t\(.name)"'
+# curl -s https://videscentrs.lvgmc.lv/data/weather_forecast_for_location_hourly?punkts=P28 | jq -r '.[] | @text "\(.laiks|strptime("%Y%m%d%H%M")|strftime("%Y-%m-%d %H:%M"))\t\(.temperatura)° (\(.sajutu_temperatura)°)\t\(.nokrisni_1h)mm (\(.nokrisnu_varbutiba)%)\t\(.veja_atrums)-\(.brazmas) m/s"' | sed -En "/\b`date +%H:00 -d '-1 hour'`\b/,\$p" | less
 weather() {
   local data="{
     time: (.time | tonumber / 100),
