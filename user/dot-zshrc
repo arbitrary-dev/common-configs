@@ -176,8 +176,24 @@ alias winetricks32="WINEARCH=win32 WINEPREFIX=~/.wine32 winetricks"
 # curl -s https://videscentrs.lvgmc.lv/data/search?q=Riga \
 # | jq -r 'map(select(.kategorija == "Prognozes"))|.[]|{id: .loc_params|fromjson|.punkts,name: .nosaukums}|@text "\(.id)\t\(.name)"'
 wlv() {
+  # P28 - Rīga, Rīgas pilsēta
   curl -s https://videscentrs.lvgmc.lv/data/weather_forecast_for_location_hourly?punkts=P28 \
-    | jq -r '.[] | @text "\(.laiks|strptime("%Y%m%d%H%M")|strftime("%Y-%m-%d %H:%M")) \(.temperatura)° (\(.sajutu_temperatura)°)\tRH \(.relativais_mitrums)%\t\(.nokrisni_1h)mm (\(.nokrisnu_varbutiba)%)\t\(.veja_atrums)-\(.brazmas) m/s"' | sed -En "/\b`date +%H:00 -d '-1 hour'`\b/,\$p" \
+  | jq -r '
+    .[]
+    | {
+      time: .laiks|strptime("%Y%m%d%H%M")|strftime("%Y-%m-%d %H:%M"),
+      temp: @text "\(.temperatura|tonumber|round)° (\(.sajutu_temperatura|tonumber|round)°)",
+      rh: @text "RH \(.relativais_mitrums|tonumber|round)%",
+      prec: (
+        if .nokrisnu_varbutiba != null
+        then @text "\(.nokrisni_1h) mm (\(.nokrisnu_varbutiba|tonumber|round)%)"
+        else "--------------" end
+      ),
+      wind: @text "\(.veja_atrums|tonumber|round)-\(.brazmas|tonumber|round) m/s",
+    }
+    | @text "\(.time)  \(.temp)\t\(.rh)\t\(.prec)\t\(.wind)"
+  ' \
+  | sed -En "/\b`date +%H:00 -d '-1 hour'`\b/,\$p" \
   | less
 }
 weather() {
