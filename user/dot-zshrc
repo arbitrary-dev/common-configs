@@ -59,6 +59,7 @@ ytm() {
     case "$1" in
       w)  local format="worstaudio" ;;
       bc) local bigcache ;;
+      ns) local no_shuffle ;;
       *)  break ;;
     esac
     shift
@@ -68,7 +69,7 @@ ytm() {
       --ytdl-format=$format${bigcache-[filesize<14M]} \
       ${bigcache---demuxer-max-bytes=5MiB} \
       ${bigcache+--demuxer-max-bytes=150MiB} \
-      "${=@:---shuffle $YTM_DEF_PLAYLIST}"
+      ${=@:-${no_shuffle---shuffle} $YTM_DEF_PLAYLIST}
 }
 # List available formats for YT video
 alias ytf="youtube-dl --list-formats"
