@@ -21,7 +21,10 @@ mkdir -p $HOME/.vim
 stow --target $HOME user
 echo "Done!"
 
-if [ -n "$TERMUX_VERSION" ]; then
+[ -z "${HOME##*com.termux*}" ] && TERMUX=1
+if [ -n "$TERMUX" ]; then
+  echo "I see you use Termux, nerd!"
+
   echo "Stowing zshrc.d/ ..."
   mkdir -p $HOME/.zshrc.d
   stow --target $HOME/.zshrc.d --dir etc/zsh zshrc.d
