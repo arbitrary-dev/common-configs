@@ -20,7 +20,7 @@ zstyle ':completion::complete:*' use-cache 1
 # Should be before all other bindkey's
 bindkey -v
 
-HISTFILE=~/.zhistory
+HISTFILE=${HISTFILE:-~/.zhistory}
 HISTSIZE=2000
 SAVEHIST=$HISTSIZE
 setopt appendhistory histignorespace histignorealldups
