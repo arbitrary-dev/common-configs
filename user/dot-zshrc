@@ -105,6 +105,7 @@ yts() {
 alias at="rg --pcre2 '(((//|/?\*|#) )|\*\*|)\b(TODO|FIXME)\b(?!(:|.*INT-\d)).*$'"
 
 alias am="alsamixer"
+alias cal="gcal -s1 -qLV -Hyes .+ | tail +5 | less"
 alias feh="feh --auto-rotate --geometry 640x480 --image-bg black -Z -."
 alias lp-a4="lp -o fit-to-page -o PageSize=A4 -o PageRegion=A4 -o PaperDimension=A4 -o ImageableArea=A4"
 alias sway-list-windows="swaymsg -t get_tree | grep app_id"
