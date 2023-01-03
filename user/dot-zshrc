@@ -687,13 +687,17 @@ awk-upd-csv-vals() {
 purchase() {
   local total=0
   while read a b name; do
+    [[ -z "$a" ]] && break
     if [[ "$a" == *g ]]; then
       local mass=${a%g}
+      local price=`command bc <<< "scale=2;$b*$mass/1000"`
+      echo "= € ${price}"
     else
-      local mass=`bc <<< "scale=2;$a*1000/$b"`
+      local mass=`command bc <<< "scale=2;$a*1000/$b"`
+      local price="$a"
+      echo "= ${mass} g"
     fi
-    echo "${mass}g of \"$name\""
-    total=`bc <<< "scale=2;$total + $b*$mass/1000"`
+    total=`command bc <<< "scale=2;$total+$price"`
   done
   echo "Total: ${total}€"
 }
