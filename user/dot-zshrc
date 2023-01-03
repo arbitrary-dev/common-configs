@@ -193,7 +193,7 @@ wlv() {
         ),
         wind: @text "\(.veja_atrums|tonumber|round)-\(.brazmas|tonumber|round) m/s",
       }
-      | @text " \(.time)  \(.temp)\t\(.rh)\t\(.prec)\t\(.wind)";
+      | @text "\(.time)  \(.temp)\t\(.rh)\t\(.prec)\t\(.wind)";
 
     .
     | map(select(.laiks|tonumber >= '`date +%Y%m%d%H00 -d '-1 hour'`'))
