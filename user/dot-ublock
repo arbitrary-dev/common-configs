@@ -1,0 +1,60 @@
+!!! 2ch !!!
+
+! Ads
+2ch.*##.mmm
+2ch.*##.plashque
+2ch.*##.header__logo
+
+! Blur degeneracy
+2ch.*##.ctlg__img,.post__file-preview:style(opacity:0.2;filter:blur(10px))
+2ch.*##.ctlg__img:hover,.post__file-preview:hover:style(opacity:1;filter:none)
+
+!!! Slack !!!
+
+! Remove top search bar
+app.slack.com##.p-top_nav
+app.slack.com##.p-workspace-layout:style(grid-template-rows:0 auto !important)
+app.slack.com##.p-workspace__primary_view:style(max-height:calc(100vh) !important)
+
+! Remove compose button
+app.slack.com##.p-channel_sidebar__compose_button
+
+! Remove channel members stack
+app.slack.com##.p-avatar_stack--details
+
+! Hide Huddle user stack for a channel (ongoing conversation)
+app.slack.com##.p-huddle_avatar_stack__avatars_container--multiple-members.p-huddle_avatar_stack__avatars_container.p-huddle_sidebar_theme
+
+! Remove DMs status icons
+app.slack.com##.p-channel_sidebar__channel .c-custom_status
+
+! Dim sidebar icons
+app.slack.com##.p-channel_sidebar__channel .c-icon:style(filter:grayscale(1);opacity:.7 !important)
+
+! Cleanup sidebar bottom
+app.slack.com###addMoreDM
+app.slack.com###sectionHeading-LTDTTBF6G
+app.slack.com###addMoreApps
+app.slack.com##.p-huddle_sidebar_footer--css_animation_done.p-huddle_sidebar_footer--join_non_active.p-huddle_sidebar_theme.p-huddle_sidebar_footer
+
+!!! Bible !!!
+
+bible.com##header,.bottom-widgets,.bible-reader-arrows-container
+bible.com##.body:style(margin-top:0!important)
+
+!!! DeepL Translate !!!
+deepl.com##.Content-module--proAdBannerWrapper--ZRu4w
+deepl.com##.Quotes-module--quotes--bNWS2
+deepl.com##.py-5.px-8.Content-module--appAdBannerWrapper---qos3
+
+!!! MISC !!!
+
+! 8/1/2020 https://rutracker.org
+rutracker.org###bn-top-right
+rutracker.org##.bn-products.bn-topic
+
+! 2021-05-06 https://system76.com
+system76.com##header.constrained:nth-of-type(1)
+
+! 2021-09-08 https://www.youtube.com
+www.youtube.com###clarify-box
