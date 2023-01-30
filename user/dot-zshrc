@@ -507,49 +507,46 @@ _check-tmpdir() {
   fi
 }
 
-_push-metals-tmpfs() {
+_prepare-metals-tmpfs() {
+  echo "skip _prepare-metals-tmpfs" && return 0
+
   _check-tmpdir || return 1
+
+  _cleanup-metals-tmpfs
 
   local project=`basename $PWD`
   local target="$TMPDIR/.bloop/$project"
 
   printf "Preparing $target... "
-  # Why not reuse? https://github.com/scalameta/coc-metals/issues/410
-  rm -rf .bloop .metals "$target"
-  mkdir -p "$target" \
-  && ln -s $target .bloop \
-  && echo "OK"
+  mkdir -p "$target" || return 1
+  ln -s $target .bloop || return 1
+  echo "OK"
 }
 
-_pop-metals-tmpfs() {
-  _check-tmpdir || return 1
+# TODO Is cleanup still needed?
+#      https://github.com/scalameta/metals/issues/3020
+_cleanup-metals-tmpfs() {
+  echo "skip _cleanup-metals-tmpfs" && return 0
 
   local project=`basename $PWD`
   local target="$TMPDIR/.bloop/$project"
 
-  printf "Cleaning up... "
-  # Why not reuse? https://github.com/scalameta/coc-metals/issues/410
-  rm -rf .bloop .metals "$target" && echo "OK"
+  printf "Cleaning up everything... "
+  rm -rf .bloop .metals **/target/ "$target" >/dev/null || return 1
+  echo "OK"
 }
 
 _metals_open() {
-  if _push-metals-tmpfs; then
-    if vim "$1"; then
+  if _prepare-metals-tmpfs; then
+    if nvim "${1#./}"; then
       sleep 1
-      _pop-metals-tmpfs
+      _cleanup-metals-tmpfs
     fi
   fi
 }
 
 metals() {
   export TMPDIR=${TMPDIR:-/tmp}
-
-  if [[ "$1" == "-c" || "$1" == "--clean" ]]; then
-    printf "Cleaning up everything... "
-    rm -rf .bloop .metals **/target/ >/dev/null || return 1
-    echo "Done."
-    shift
-  fi
 
   local file="$1"
   file="${file:-build.sbt}"
