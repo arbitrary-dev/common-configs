@@ -134,7 +134,7 @@ vi() {
 
 gen-passw() {
   strings /dev/urandom \
-  | grep -oE '[a-zA-Z0-9.,/\'\''"]' \
+  | grep -oE '[a-zA-Z0-9.,_-]' \
   | head -${1:-32} \
   | tr -d '\n'
   echo
