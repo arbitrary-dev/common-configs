@@ -5,7 +5,8 @@ local opt = vim.opt
 
 opt.number = true
 opt.wrap = false
-opt.updatetime = 1000 -- to make references highlighting faster
+opt.updatetime = 1000 -- make references highlighting faster
+opt.mouse = '' -- disable mouse
 
 opt.ignorecase = true
 opt.smartcase = true
@@ -13,9 +14,6 @@ opt.smartcase = true
 opt.expandtab = true
 opt.tabstop = 2
 opt.shiftwidth = 2
-
--- Disable mouse
-opt.mouse = ''
 
 -- Prevents opening of the folds during }{ navigation
 -- https://github.com/vim/vim/issues/7134
