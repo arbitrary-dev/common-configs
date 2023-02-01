@@ -7,6 +7,7 @@ opt.number = true
 opt.wrap = false
 opt.updatetime = 1000 -- make references highlighting faster
 opt.mouse = '' -- disable mouse
+opt.laststatus = 1 -- show statusline only if there are at least two windows
 
 opt.ignorecase = true
 opt.smartcase = true
