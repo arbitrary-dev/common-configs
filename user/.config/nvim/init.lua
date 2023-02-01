@@ -80,6 +80,13 @@ hi('Visual', {link='CursorLineNr'})
 opt.fillchars = "vert: "
 hi('VertSplit', {link='StatusLineNC'})
 
+require("indent_blankline").setup {
+  show_current_context = true,
+  show_current_context_start = false,
+}
+hi('IndentBlanklineChar', {ctermfg=236})
+hi('IndentBlanklineContextChar', {ctermfg='darkred'})
+
 opt.signcolumn = 'number'
 vim.fn.sign_define('DiagnosticSignError', {text='EE', linehl='DiagnosticSignErrorLine'})
 hi('DiagnosticError', {ctermfg='red'})

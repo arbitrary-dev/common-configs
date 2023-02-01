@@ -35,4 +35,6 @@ require("packer").startup(function(use)
       "mfussenegger/nvim-dap",
     },
   })
+
+  use "lukas-reineke/indent-blankline.nvim"
 end)
