@@ -500,19 +500,19 @@ jnote() {
 
 # Scala Metals
 
-_check-tmpdir() {
+_metals_check_tmpdir() {
   if [[ ! -w "$TMPDIR" ]]; then
     echo "No writable TMPDIR specified!"
     return 1
   fi
 }
 
-_prepare-metals-tmpfs() {
-  echo "skip _prepare-metals-tmpfs" && return 0
+_metals_prepare_tmpfs() {
+  echo "skip $0" && return 0
 
   _check-tmpdir || return 1
 
-  _cleanup-metals-tmpfs
+  _metals_cleanup_tmpfs
 
   local project=`basename $PWD`
   local target="$TMPDIR/.bloop/$project"
@@ -525,22 +525,22 @@ _prepare-metals-tmpfs() {
 
 # TODO Is cleanup still needed?
 #      https://github.com/scalameta/metals/issues/3020
-_cleanup-metals-tmpfs() {
-  echo "skip _cleanup-metals-tmpfs" && return 0
+_metals_cleanup_tmpfs() {
+  echo "skip $0" && return 0
 
   local project=`basename $PWD`
   local target="$TMPDIR/.bloop/$project"
 
   printf "Cleaning up everything... "
-  rm -rf .bloop .metals **/target/ "$target" >/dev/null || return 1
+  rm -rf .bloop .bsp .metals **/target/ "$target" >/dev/null || return 1
   echo "OK"
 }
 
 _metals_open() {
-  if _prepare-metals-tmpfs; then
+  if _metals_prepare_tmpfs; then
     if nvim "${1#./}"; then
       sleep 1
-      _cleanup-metals-tmpfs
+      _metals_cleanup_tmpfs
     fi
   fi
 }
