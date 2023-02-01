@@ -47,11 +47,42 @@ end
 
 hi('Error', {ctermfg='black', ctermbg='red'})
 hi('ErrorMsg', {link='Error'})
-hi('Folded', {ctermfg='darkcyan', ctermbg='black'})
-hi('FoldColumnt', {link='Folded'})
-hi('LineNr', {ctermfg='darkcyan'})
-hi('Pmenu', {ctermfg='white', ctermbg='black'})
-hi('PmenuSel', {ctermfg='lightcyan', ctermbg='darkcyan'})
+hi('ModeMsg', {ctermfg='black', ctermbg='red'})
+hi('LspCodeLens', {link='Folded'})
+hi('LspCodeLensSeparator', {ctermfg='darkred'})
+hi('LineNr', {ctermfg='darkgray'})
+hi('NonText', {link='LineNr'})
+hi('Pmenu', {ctermfg=253, ctermbg=236})
+hi('PmenuSel', {ctermfg='black', ctermbg='darkred'})
+hi('Comment', {ctermfg='darkgray'})
+hi('Folded', {link='Comment'})
+hi('Search', {reverse=true})
+hi('Todo', {ctermfg='black', ctermbg='darkred'})
+hi('MatchParen', {ctermbg=88})
+hi('LspReferenceRead', {link='MatchParen'})
+hi('LspReferenceText', {link='MatchParen'})
+hi('LspReferenceWrite', {link='MatchParen'})
 
-hi('VertSplit', {link='StatusLineNC'})
+hi('Identifier', {link='Statement'})
+hi('scalaInstanceDeclaration', {ctermfg='green'})
+hi('scalaNameDefinition', {ctermfg='darkgreen'})
+hi('scalaInterpolation', {ctermfg='lightmagenta'})
+hi('scalaInterpolationBoundary', {link='scalaInterpolation'})
+hi('scalaDocLinks', {ctermfg=32})
+hi('scalaParameterAnnotation', {ctermfg='gray'})
+hi('scalaParameterAnnotationValue', {link='scalaParameterAnnotation'})
+
+opt.cursorline = true
+opt.cursorlineopt = 'number'
+hi('CursorLineNr', {ctermfg='black', ctermbg='red'})
+hi('Visual', {link='CursorLineNr'})
+
 opt.fillchars = "vert: "
+hi('VertSplit', {link='StatusLineNC'})
+
+opt.signcolumn = 'number'
+vim.fn.sign_define('DiagnosticSignError', {text='EE', linehl='DiagnosticSignErrorLine'})
+hi('DiagnosticError', {ctermfg='red'})
+hi('DiagnosticUnderlineError', {ctermbg=52})
+hi('DiagnosticSignError', {ctermfg='red', ctermbg=52})
+hi('DiagnosticSignErrorLine', {ctermbg=52})
