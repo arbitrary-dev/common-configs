@@ -175,12 +175,33 @@ alias wine32="WINEARCH=win32 WINEPREFIX=~/.wine32 wine"
 alias winecfg32="WINEARCH=win32 WINEPREFIX=~/.wine32 winecfg"
 alias winetricks32="WINEARCH=win32 WINEPREFIX=~/.wine32 winetricks"
 
-# TODO parametrize by the city
-# curl -s https://videscentrs.lvgmc.lv/data/search?q=Riga \
-# | jq -r 'map(select(.kategorija == "Prognozes"))|.[]|{id: .loc_params|fromjson|.punkts,name: .nosaukums}|@text "\(.id)\t\(.name)"'
+# Weather in Latvia
 wlv() {
-  # P28 - Rīga, Rīgas pilsēta
-  curl -s https://videscentrs.lvgmc.lv/data/weather_forecast_for_location_hourly?punkts=P28 \
+  local p="P28"
+  local n="Rīga, Rīgas pilsēta"
+
+  if [[ -n "$1" ]]; then
+    local r=("${(@f)$(
+      curl --get --data-urlencode "q=$1" -s https://videscentrs.lvgmc.lv/data/search \
+      | jq -r 'map(select(.kategorija == "Prognozes"))|.[]|{id: .loc_params|fromjson|.punkts,name: .nosaukums}|@text "\(.id)\t\(.name)"'
+    )}")
+    if (( $#r > 1 )); then
+      for l in "${r[@]}"; do echo $l; done
+      echo
+      read ans?"Which one? "
+      IFS=$'\t' read p n <<< "${r[(r)$ans	*]}"
+    else
+      IFS=$'\t' read p n <<< "$r"
+    fi
+    if [[ -z "$p" ]]; then
+      echo "Location not found!"
+      return 1
+    fi
+  fi
+
+  echo $n
+
+  curl -s https://videscentrs.lvgmc.lv/data/weather_forecast_for_location_hourly?punkts=$p \
   | jq -r '
     def fmt:
       {
