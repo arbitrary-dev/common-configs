@@ -8,7 +8,14 @@ export PS1='%B%F{green}'$PS1
 
 alias hanako-fm="mpv https://musicbird.leanstream.co/JCB069-MP3"
 
-alias yt="youtube-dl"
+alias yt="yt-dlp"
+# List available formats for YT video
+alias ytf="yt --list-formats"
+# Download YT audio in best quality
+alias yta="yt -f bestaudio[ext=m4a]"
+# Download YT video in best quality
+alias ytv="yt -f bestvideo+bestaudio"
+
 # YouTube watch
 ytw() {
   local format="worstvideo[height>=240]+worstaudio"
@@ -71,12 +78,6 @@ ytm() {
       ${bigcache+--demuxer-max-bytes=150MiB} \
       ${=@:-${no_shuffle---shuffle} $YTM_DEF_PLAYLIST}
 }
-# List available formats for YT video
-alias ytf="youtube-dl --list-formats"
-# Download YT audio in best quality
-alias yta="youtube-dl -f bestaudio[ext=m4a]"
-# Download YT video in best quality
-alias ytv="youtube-dl -f bestvideo+bestaudio"
 
 # Download YT video using free proxies
 ytp() {
