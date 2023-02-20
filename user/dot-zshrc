@@ -203,19 +203,29 @@ wlv() {
 
   curl -s https://videscentrs.lvgmc.lv/data/weather_forecast_for_location_hourly?punkts=$p \
   | jq -r '
+    def temp:
+      .|tonumber
+      | if . < 0 then round|tostring else round|tostring | "+" + . end
+      | . + "°";
+
     def fmt:
       {
         time: .laiks|strptime("%Y%m%d%H%M")|strftime("%H:%M"),
-        temp: @text "\(.temperatura|tonumber|round)° (\(.sajutu_temperatura|tonumber|round)°)",
+        temp: @text "\(.temperatura|temp) (\(.sajutu_temperatura|temp))",
         rh: @text "RH \(.relativais_mitrums|tonumber|round)%",
-        prec: (
-          if .nokrisnu_varbutiba != null
-          then @text "\(.nokrisni_1h) mm (\(.nokrisnu_varbutiba|tonumber|round)%)"
-          else "--------------" end
-        ),
         wind: @text "\(.veja_atrums|tonumber|round)-\(.brazmas|tonumber|round) m/s",
+        uv: (
+          if .uvi_indekss
+          then @text "  UV\(.uvi_indekss)"
+          else "" end
+        ),
+        prec: (
+          if .nokrisni_1h|tonumber > 0
+          then @text "  \(.nokrisni_1h) mm"
+          else "" end
+        ),
       }
-      | @text "\(.time)  \(.temp)\t\(.rh)\t\(.prec)\t\(.wind)";
+      | @text "\(.time)  \(.temp)  \(.rh)  \(.wind)\(.uv)\(.prec)";
 
     .
     | map(select(.laiks|tonumber >= '`date +%Y%m%d%H00 -d '-1 hour'`'))
