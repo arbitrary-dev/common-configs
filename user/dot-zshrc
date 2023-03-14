@@ -215,8 +215,8 @@ wlv() {
         rh: @text "RH \(.relativais_mitrums|tonumber|round)%",
         wind: @text "\(.veja_atrums|tonumber|round)-\(.brazmas|tonumber|round) m/s",
         uv: (
-          if .uvi_indekss
-          then @text "  UV\(.uvi_indekss)"
+          if .uvi_indekss and (.uvi_indekss|tonumber|round) > 0
+          then @text "  UV\(.uvi_indekss|tonumber|round)"
           else "" end
         ),
         prec: (
