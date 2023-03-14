@@ -204,9 +204,12 @@ wlv() {
   curl -s https://videscentrs.lvgmc.lv/data/weather_forecast_for_location_hourly?punkts=$p \
   | jq -r '
     def temp:
-      .|tonumber
-      | if . < 0 then round|tostring else round|tostring | "+" + . end
-      | . + "°";
+      .
+      | tonumber
+      | round
+      | tostring
+      | . + "°"
+      | if startswith("-") then . else "+" + . end;
 
     def fmt:
       {
