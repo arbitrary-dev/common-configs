@@ -92,7 +92,7 @@ ytp() {
     echo -n "\nTrying with ${p[@]}\n"
     #mpv --ytdl-format="[height<=360]" --ytdl-raw-options=proxy="$p" $1 \
     #yt -f 243+249 --proxy "$p" https://www.youtube.com/watch?v=$1 \
-    yt --proxy "${p[2]}" "$@" \
+    ytf --proxy "${p[2]}" "$@" \
     && break
   done
 }
