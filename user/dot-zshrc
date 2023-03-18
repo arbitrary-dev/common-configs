@@ -111,6 +111,7 @@ alias cal="gcal -s1 -qLV -n .+ | tail +5 | perl -p $MY_SCRIPTS/gcal-colors.pl | 
 alias feh="feh --auto-rotate --geometry 640x480 --image-bg black -Z -."
 alias lp-a4="lp -o fit-to-page -o PageSize=A4 -o PageRegion=A4 -o PaperDimension=A4 -o ImageableArea=A4"
 alias sway-list-windows="swaymsg -t get_tree | grep app_id"
+mic() { ffmpeg -y -f pulse -ac 1 -i default /tmp/mic-`date +%Y-%m-%d-%H%M%S`.mp3; }
 
 alias m="memo"
 alias me="memo --edit"
