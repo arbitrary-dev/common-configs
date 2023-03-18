@@ -81,17 +81,18 @@ ytm() {
 
 # Download YT video using free proxies
 ytp() {
-  local proxies=(`
+  local proxies=("${(@f)$(
     curl -s https://raw.githubusercontent.com/clarketm/proxy-list/master/proxy-list.txt \
     | grep -E "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+" \
-    | sed -E -e 's/([^ ]+) [^S]*(S?).*/\2\1/' -e 's_^S_https://_'
-  `)
+    | sed -E -e 's/([^ ]+) (..)-.*(S?) ([-+]).*/\2 \3\1 \4/' -e 's_ S_ https://_'
+  )}")
+
   while true; do
-    local p="${proxies[`shuf -i1-${#proxies} -n1`]}"
-    echo -n "\nTrying with $p...\n"
+    local p=("${(ps: :)proxies[`shuf -i1-${#proxies} -n1`]}")
+    echo -n "\nTrying with ${p[@]}\n"
     #mpv --ytdl-format="[height<=360]" --ytdl-raw-options=proxy="$p" $1 \
     #yt -f 243+249 --proxy "$p" https://www.youtube.com/watch?v=$1 \
-    yt --proxy "$p" "$@" \
+    yt --proxy "${p[2]}" "$@" \
     && break
   done
 }
