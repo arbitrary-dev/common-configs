@@ -216,7 +216,7 @@ wlv() {
     def fmt:
       {
         time: .laiks|strptime("%Y%m%d%H%M")|strftime("%H:%M"),
-        temp: @text "\(.temperatura|temp) (\(.sajutu_temperatura|temp))",
+        temp: @text "\(.temperatura|temp)",
         rh: @text "RH \(.relativais_mitrums|tonumber|round)%",
         wind: @text "\(.veja_atrums|tonumber|round)-\(.brazmas|tonumber|round) m/s",
         uv: (
