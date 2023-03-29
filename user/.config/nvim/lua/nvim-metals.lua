@@ -56,6 +56,7 @@ map("n", "<space>s", [[<cmd>lua require("telescope.builtin").lsp_dynamic_workspa
 map("n", "<space>f", [[<cmd>lua require("telescope.builtin").find_files()<CR>]])
 map("n", "<space>g", [[<cmd>lua require("telescope.builtin").live_grep()<CR>]])
 map("n", "<space>b", [[<cmd>lua require("telescope.builtin").buffers()<CR>]])
+map("n", "<space>p", [[<cmd>lua require("telescope.builtin").resume()<CR>]])
 -- Add `disable_coordinates=true` when the issue is fixed:
 -- https://github.com/nvim-telescope/telescope.nvim/issues/2219
 map("n", "<leader>at", [[<cmd>lua require("telescope.builtin").grep_string({prompt_title="Pending TODO's & FIXME's",search="\\b(TODO|FIXME)\\b(?!(:|.*INT-\\d))",use_regex=true,path_display={"tail"},additional_args={"--pcre2", "--trim"}})<CR>]])
