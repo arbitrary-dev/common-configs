@@ -40,6 +40,8 @@ require('telescope').setup({
     path_display = {"smart"},
   }
 })
+-- Disable folding in Telescope's result window.
+vim.api.nvim_create_autocmd("FileType", { pattern = "TelescopeResults", command = [[setlocal nofoldenable]] })
 
 function hi(group, val)
   vim.api.nvim_set_hl(0, group, val)
