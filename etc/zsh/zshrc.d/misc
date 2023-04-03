@@ -122,11 +122,11 @@ emrg() {
   fi
 }
 
-alias bfs-usage="btrfs filesystem usage"
-alias bfs-du="btrfs fi du"
-alias bfs-df="btrfs fi df"
+alias bfs-usage="sudo btrfs filesystem usage"
+alias bfs-du="sudo btrfs fi du"
+alias bfs-df="sudo btrfs fi df"
 alias bfs-comp="sudo compsize"
-alias bfs-defrag="btrfs filesystem defragment -r -clzo"
+alias bfs-defrag="sudo btrfs filesystem defragment -r -clzo"
 
 alias cpv="rsync -rh --info=progress2"
 # Should remove empty source dirs afterwards
