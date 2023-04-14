@@ -178,8 +178,8 @@ alias winetricks32="WINEARCH=win32 WINEPREFIX=~/.wine32 winetricks"
 
 # Weather in Latvia
 wlv() {
-  local p="P28"
-  local n="Rīga, Rīgas pilsēta"
+  local id="P28"
+  local name="Rīga, Rīgas pilsēta"
 
   if [[ -n "$1" ]]; then
     local r=("${(@f)$(
@@ -190,20 +190,22 @@ wlv() {
       for l in "${r[@]}"; do echo $l; done
       echo
       read ans?"Which one? "
-      IFS=$'\t' read p n <<< "${r[(r)$ans	*]}"
+      IFS=$'\t' read id name <<< "${r[(r)$ans	*]}"
     else
-      IFS=$'\t' read p n <<< "$r"
+      IFS=$'\t' read id name <<< "$r"
     fi
-    if [[ -z "$p" ]]; then
+    if [[ -z "$id" ]]; then
       echo "Location not found!"
       return 1
     fi
   fi
 
-  echo $n
+  echo $name
 
-  curl -s https://videscentrs.lvgmc.lv/data/weather_forecast_for_location_hourly?punkts=$p \
-  | jq -r '
+  local hour_ago=`date +%Y%m%d%H00 -d '-1 hour'`
+  curl -s https://videscentrs.lvgmc.lv/data/weather_forecast_for_location_hourly?punkts=$id \
+  | jq -r \
+  '
     def fmt_temp_with_padding:
       .temperatura | tonumber | round
       | . as $t
@@ -238,8 +240,7 @@ wlv() {
       }
       | @text "\(.time)  \(.temp) \(.wind)  \(.rh)\(.uv)\(.prec)";
 
-    .
-    | map(select(.laiks|tonumber >= '`date +%Y%m%d%H00 -d '-1 hour'`'))
+    map(select(.laiks|tonumber >= '$hour_ago'))
     | group_by(.laiks|strptime("%Y%m%d%H%M")|strftime("%Y-%m-%d"))[]
     | {(.[0].laiks|strptime("%Y%m%d%H%M")|strftime("%Y-%m-%d")): [.[] | fmt]}
     | to_entries[0]
