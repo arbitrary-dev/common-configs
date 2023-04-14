@@ -205,20 +205,27 @@ wlv() {
 
   curl -s https://videscentrs.lvgmc.lv/data/weather_forecast_for_location_hourly?punkts=$p \
   | jq -r '
-    def temp:
-      .
-      | tonumber
-      | round
+    def fmt_temp_with_padding:
+      .temperatura | tonumber | round
+      | . as $t
       | tostring
       | . + "°"
-      | if startswith("-") then . else "+" + . end;
+      | if startswith("-") then . else "+" + . end
+      | if $t|fabs < 10 then " " + . else . end;
+
+    def fmt_wind_with_padding:
+      (.veja_atrums|tonumber|round) as $a
+      | (.brazmas|tonumber|round) as $b
+      | @text "\($a)-\($b) m/s"
+      | if $a < 10 then " " + . else . end
+      | if $b < 10 then " " + . else . end;
 
     def fmt:
       {
         time: .laiks|strptime("%Y%m%d%H%M")|strftime("%H:%M"),
-        temp: @text "\(.temperatura|temp)",
+        temp: fmt_temp_with_padding,
         rh: @text "RH \(.relativais_mitrums|tonumber|round)%",
-        wind: @text "\(.veja_atrums|tonumber|round)-\(.brazmas|tonumber|round) m/s",
+        wind: fmt_wind_with_padding,
         uv: (
           if .uvi_indekss and (.uvi_indekss|tonumber|round) > 0
           then @text "  UV\(.uvi_indekss|tonumber|round)"
@@ -230,7 +237,7 @@ wlv() {
           else "" end
         ),
       }
-      | @text "\(.time)  \(.temp)  \(.rh)  \(.wind)\(.uv)\(.prec)";
+      | @text "\(.time)  \(.temp) \(.wind)  \(.rh)\(.uv)\(.prec)";
 
     .
     | map(select(.laiks|tonumber >= '`date +%Y%m%d%H00 -d '-1 hour'`'))
@@ -241,6 +248,7 @@ wlv() {
   ' \
   | less
 }
+
 weather() {
   local data="{
     time: (.time | tonumber / 100),
