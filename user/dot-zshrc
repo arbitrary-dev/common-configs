@@ -208,18 +208,17 @@ wlv() {
   '
     def fmt_temp_with_padding:
       .temperatura | tonumber | round
-      | . as $t
-      | tostring
-      | . + "°"
+      | (if fabs < 10 then " " else "" end) as $pad
+      | tostring + "°"
       | if startswith("-") then . else "+" + . end
-      | if $t|fabs < 10 then " " + . else . end;
+      | $pad + .;
 
     def fmt_wind_with_padding:
       (.veja_atrums|tonumber|round) as $a
       | (.brazmas|tonumber|round) as $b
       | @text "\($a)-\($b) m/s"
-      | if $a < 10 then " " + . else . end
-      | if $b < 10 then " " + . else . end;
+      | if $a < 10 then " " + . end
+      | if $b < 10 then " " + . end;
 
     def fmt:
       {
