@@ -43,9 +43,8 @@ bible.com##header,.top-header-mobile,#bottom-widgets,.NavArrows_bible-reader-arr
 bible.com##main:style(margin-top:0!important)
 
 !!! DeepL Translate !!!
-deepl.com##.Content-module--proAdBannerWrapper--ZRu4w
-deepl.com##.Quotes-module--quotes--bNWS2
-deepl.com##.py-5.px-8.Content-module--appAdBannerWrapper---qos3
+deepl.com##*[class*=AdBannerWrapper]
+deepl.com##*[class^=Quote-module--quoteInner-] > *:not(*[class^=Quote-module--quoteIcon-]):style(visibility:hidden)
 
 !!! MISC !!!
 
@@ -58,4 +57,3 @@ system76.com##header.constrained:nth-of-type(1)
 
 ! 2021-09-08 https://www.youtube.com
 www.youtube.com###clarify-box
-
