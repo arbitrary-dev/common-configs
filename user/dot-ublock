@@ -39,8 +39,8 @@ app.slack.com##.p-huddle_sidebar_footer--css_animation_done.p-huddle_sidebar_foo
 
 !!! Bible !!!
 
-bible.com##header,.bottom-widgets,.bible-reader-arrows-container
-bible.com##.body:style(margin-top:0!important)
+bible.com##header,.top-header-mobile,#bottom-widgets,.NavArrows_bible-reader-arrows-container__8y_Ml,.ChapterContent_version-copyright__Ij_9E
+bible.com##main:style(margin-top:0!important)
 
 !!! DeepL Translate !!!
 deepl.com##.Content-module--proAdBannerWrapper--ZRu4w
@@ -58,3 +58,4 @@ system76.com##header.constrained:nth-of-type(1)
 
 ! 2021-09-08 https://www.youtube.com
 www.youtube.com###clarify-box
+
