@@ -26,10 +26,6 @@ if filereadable(expand('~/.vim/autoload/plug.vim'))
   Plug 'derekwyatt/vim-scala'
   au BufRead,BufNewFile *.sbt set filetype=scala
 
-  " LSP
-  Plug 'neoclide/coc.nvim', {'branch': 'release'}
-  \ | source ~/.vim/coc-nvim-mappings.vim
-
   " Ident guides
   Plug 'nathanaelkane/vim-indent-guides'
   let g:indent_guides_enable_on_vim_startup = 1
