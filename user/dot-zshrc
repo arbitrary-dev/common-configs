@@ -28,6 +28,8 @@ ytw() {
           shift ;;
       -f) format="$2"
           shift 2 ;;
+      -p) flags+=(--ytdl-raw-options=proxy=["$2"])
+          shift 2 ;;
       -*) flags+=($1)
           shift ;;
       *)  break ;;
