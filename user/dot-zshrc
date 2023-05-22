@@ -18,7 +18,7 @@ alias ytv="yt -f bestvideo+bestaudio"
 
 # YouTube watch
 ytw() {
-  local format="worstvideo[height>=240]+worstaudio"
+  local format="worstvideo[height>=240]+worstaudio,worst[height>=240],hls-655,0"
 
   local flags=()
   while true; do
