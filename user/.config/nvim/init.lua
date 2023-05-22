@@ -57,7 +57,7 @@ hi('PmenuSel', {ctermfg='black', ctermbg='darkred'})
 hi('LineNr', {ctermfg='darkgray'})
 hi('Folded', {link='Comment'})
 hi('Search', {reverse=true})
-hi('Todo', {ctermfg='black', ctermbg='darkred'})
+hi('Todo', {ctermfg='black', ctermbg='yellow'})
 hi('MatchParen', {ctermbg=88})
 
 hi('LspCodeLens', {ctermfg=88})
@@ -74,6 +74,7 @@ hi('scalaInterpolationBoundary', {link='scalaInterpolation'})
 hi('scalaDocLinks', {ctermfg=32})
 hi('scalaParameterAnnotation', {ctermfg='gray'})
 hi('scalaParameterAnnotationValue', {link='scalaParameterAnnotation'})
+hi('scalaUnimplemented', {link='Todo'})
 
 opt.cursorline = true
 opt.cursorlineopt = 'number'
