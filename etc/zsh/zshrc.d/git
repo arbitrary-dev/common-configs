@@ -201,3 +201,6 @@ alias gig="git update-index --assume-unchanged"
 alias gug="git update-index --no-assume-unchanged"
 # Git list ignored files
 alias gli='git ls-files -v `git rev-parse --show-toplevel` | grep ^[a-z]'
+
+# Removes all orphaned data immediately
+alias git-gc-aggressive="git reflog expire --expire=now --all && git gc --prune=now --aggressive"
