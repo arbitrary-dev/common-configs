@@ -92,11 +92,17 @@ hi('IndentBlanklineChar', {ctermfg=236})
 hi('IndentBlanklineContextChar', {ctermfg='darkred'})
 
 opt.signcolumn = 'number'
-vim.fn.sign_define('DiagnosticSignError', {text='EE', linehl='DiagnosticSignErrorLine'})
+vim.fn.sign_define('DiagnosticSignError', {
+  text='EE',
+  texthl='DiagnosticSignError',
+  culhl='CursorLineNr',
+  linehl='DiagnosticSignErrorLine',
+})
 hi('DiagnosticError', {ctermfg='red'})
-hi('DiagnosticUnderlineError', {ctermbg=52})
+hi('DiagnosticUnderlineError', {reverse=true, ctermfg='darkred'})
 hi('DiagnosticSignError', {ctermfg='red', ctermbg=52})
 hi('DiagnosticSignErrorLine', {ctermbg=52})
+hi('DiagnosticFloatingError', {ctermfg='lightred'})
 
 hi('ColorColumn', {ctermbg=52})
 -- Add 110 line width indicator for Scala sources.
