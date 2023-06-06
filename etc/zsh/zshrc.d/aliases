@@ -4,6 +4,7 @@ alias -s mp4=mpv
 alias -s MPG=mpv
 alias -s avi=mpv
 alias -s mkv=mpv
+alias -s mov=mpv
 alias -s flv=mpv
 alias -s flac=mpv
 alias -s webm="mpv -loop-playlist=inf"
