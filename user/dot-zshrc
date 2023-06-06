@@ -62,10 +62,10 @@ ytm() {
     return 1
   fi
 
-  local format="bestaudio,best"
+  local format="bestaudio/best"
   while true; do
     case "$1" in
-      w)  local format="worstaudio,worst" ;;
+      w)  local format="worstaudio/worst" ;;
       bc) local bigcache ;;
       ns) local no_shuffle ;;
       *)  break ;;
