@@ -201,7 +201,7 @@ wlv() {
     fi
   fi
 
-  echo $name
+  echo "$name"
 
   local hour_ago=`date +%Y%m%d%H00 -d '-1 hour'`
   curl -s https://videscentrs.lvgmc.lv/data/weather_forecast_for_location_hourly?punkts=$id \
