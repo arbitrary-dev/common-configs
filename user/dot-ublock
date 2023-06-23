@@ -43,8 +43,9 @@ bible.com##header,.bottom-widgets,.bible-reader-arrows-container
 bible.com##.body:style(margin-top:0!important)
 
 !!! DeepL Translate !!!
-deepl.com##*[class*=AdBannerWrapper]
-deepl.com##*[class^=Quote-module--quoteInner-] > *:not(*[class^=Quote-module--quoteIcon-]):style(visibility:hidden)
+deepl.com##.Content-module--proAdBannerWrapper--ZRu4w
+deepl.com##.Quotes-module--quotes--bNWS2
+deepl.com##.py-5.px-8.Content-module--appAdBannerWrapper---qos3
 
 !!! MISC !!!
 
