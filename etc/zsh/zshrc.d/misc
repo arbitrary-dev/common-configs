@@ -125,7 +125,7 @@ esync() {
 
   if sudo sh -c "
     printf 'Syncing... '
-    emaint sync ${1:+-r} ${1:--a} -a &> $sync_log
+    emaint sync ${1:+-r} ${1:--a} &> $sync_log
   "
   then
     echo "done"
