@@ -204,3 +204,13 @@ alias gli='git ls-files -v `git rev-parse --show-toplevel` | grep ^[a-z]'
 
 # Removes all orphaned data immediately
 alias git-gc-aggressive="git reflog expire --expire=now --all && git gc --prune=now --aggressive"
+
+# The most useful aliases
+alias _gst="GIT_DIR=_git gst"
+alias _gdf="GIT_DIR=_git gdf"
+alias _gdfc="GIT_DIR=_git gdfc"
+alias _glg="GIT_DIR=_git glg"
+alias _ga="GIT_DIR=_git ga"
+alias _gcm="GIT_DIR=_git gcm"
+alias _gco="GIT_DIR=_git gco"
+alias _grm="GIT_DIR=_git grm"
