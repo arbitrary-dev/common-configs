@@ -107,7 +107,7 @@ elog() {
     h=$(( `tput lines` - 4 ))
     log=/tmp/portage/*/'$1'*/temp/build.log
     [ ! -f $log ] && log=/home/.portage-tmpdir/portage/*/'$1'*/temp/build.log
-    [ -f $log ] && >&2 echo $log
+    [ -f $log ] && >&2 echo $log || return 1
     log=`ls $log`
     tail -fn$h $log \
     | sed -E -e "s/^ *\"?i686-pc-linux-gnu-([^ ]+)\"? .*-o \"?([^ &:\"]+).*/\1 ... -o \2/" \
