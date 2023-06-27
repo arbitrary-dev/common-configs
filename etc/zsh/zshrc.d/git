@@ -30,7 +30,7 @@ gcu() {
 
   local users=${GIT_USERS:-/etc/git-users}
 
-  grep ^$1 $users | cut -f2- | IFS=$'\t' read user email
+  grep -E "^$1|$1" $users | read alias user email
 
   if (( $? )); then
     echo "There's no such user '$1' in $users !"
