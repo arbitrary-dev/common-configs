@@ -185,9 +185,7 @@ rs() {
     echo "Sorry, can't\!"
     return 1
   fi
-  if tty | grep -q tty || [[ "$TERM" == "screen.linux" ]]; then
-    local use_drm=1
-  fi
+  [[ $TERM = *linux ]] && local use_drm=1
   pkill $app
   $app ${use_drm:+-mdrm} ${1:+-PO ${1}00K} ${1:--x} ${2:+-g $2} &
   disown
