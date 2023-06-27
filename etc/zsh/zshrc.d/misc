@@ -161,12 +161,14 @@ alias bat=battery
 alias ccs="CCACHE_DIR=/var/cache/ccache watch -d -n13 ccache -sv"
 alias ptop="sudo powertop"
 alias psw="sudo /usr/local/bin/psw"
-alias rbt="sudo reboot"
 alias rn="perl-rename"
-alias shtd="echo 'Shutdown enqueued...'; sudo shutdown -h"
 alias xb="sudo xb"
 alias xs="xargs -I{}"
 alias btr="sudo bluetooth-restart"
+
+alias poff="loginctl poweroff"
+alias rbt="loginctl reboot"
+alias susp="loginctl suspend-then-hibernate"
 
 alias df="df -h"
 alias du="du -h"
