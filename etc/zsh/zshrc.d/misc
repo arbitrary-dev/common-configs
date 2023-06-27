@@ -102,6 +102,24 @@ alias ehist="sudo genlop -it"
 alias ecln="sudo emerge --ask --depclean"
 alias eclnd="sudo eclean-dist --deep --fetch-restricted"
 
+elog() {
+  sudo sh -c '
+    h=$(( `tput lines` - 4 ))
+    log=/tmp/portage/*/'$1'*/temp/build.log
+    [ ! -f $log ] && log=/home/.portage-tmpdir/portage/*/'$1'*/temp/build.log
+    [ -f $log ] && >&2 echo $log
+    log=`ls $log`
+    tail -fn$h $log \
+    | sed -E -e "s/^ *\"?i686-pc-linux-gnu-([^ ]+)\"? .*-o \"?([^ &:\"]+).*/\1 ... -o \2/" \
+             -e "s!^ *\"?(\[[^]]+]|[^ \"]+)\"? [^.]{3}.+ -o ([^ ]+\.o)( .*|)\$!\1 ../\2!" \
+             -e "s/^( \* |>>> | *)\"?(\[[^]]+]|[^ \"]+)\"? [^.]{3}.+ (\"?[^ ]+).*$/\1\2 ... \3/" \
+             -e "s!^/[^ ]+/([^/ ]+) !\1 !" \
+             -e "s!${log%%/temp/*}(/work(/build|/'$1'[^/]+|)|)!..!g" \
+             -e "s/\.\.\. \.\./../" \
+             -e "/^make\\b|^$/d"
+  '
+}
+
 esync() {
   local sync_log="/tmp/.emaint.log"
 
