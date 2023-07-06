@@ -84,6 +84,52 @@ ytm() {
       ${=@:-${no_shuffle---shuffle} $YTM_DEF_PLAYLIST}
 }
 
+mus() {
+  local D=${MUS:-~/Music}
+
+  while true; do
+    case "$1" in
+      s) local SHUFFLE ;;
+      l) local LOOP ;;
+      ls) local LIST ;;
+      *) break ;;
+    esac
+    shift
+  done
+
+  if (( ! $# )); then
+    ls "$D"
+    return
+  fi
+
+  # Case-sensitive search
+  [[ "$@" =~ [A-Z] ]] && local CS
+
+  local FS=(${(@f)"$(find "$D"/ -type d -${CS-i}name "*$@*")"})
+  (( ! $#FS )) && FS=(${(@f)"$(find "$D"/ -type f -${CS-i}name "*$@*")"})
+
+  if (( $#FS > 1 )); then
+    for F in $FS; do echo ${F#"$D"/}; done
+    echo
+    vared -p "Which one? " -c FILE
+    echo
+    # Recurse!
+    mus "$FILE"
+    return $?
+  elif (( ! $#FS )); then
+    echo "No matches found!"
+    return 1
+  fi
+
+  local FILE="${FS[1]}"
+  [[ -d "$FILE" ]] && echo "$FILE"
+  if [[ -v LIST ]]; then
+    ls "$FILE"
+  else
+    echo mpv ${SHUFFLE+--shuffle} ${LOOP+--loop-playlist} "$FILE"
+  fi
+}
+
 # Download YT video using free proxies
 ytp() {
   local proxies=("${(@f)$(
