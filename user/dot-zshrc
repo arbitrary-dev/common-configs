@@ -126,7 +126,7 @@ mus() {
   if [[ -v LIST ]]; then
     ls "$FILE"
   else
-    echo mpv ${SHUFFLE+--shuffle} ${LOOP+--loop-playlist} "$FILE"
+    mpv ${SHUFFLE+--shuffle} ${LOOP+--loop-playlist} "$FILE"
   fi
 }
 
