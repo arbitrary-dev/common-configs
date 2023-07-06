@@ -105,6 +105,7 @@ mus() {
   # Case-sensitive search
   [[ "$@" =~ [A-Z] ]] && local CS
 
+  # Search for directories first, then files
   local FS=(${(@f)"$(find "$D"/ -type d -${CS-i}name "*$@*")"})
   (( ! $#FS )) && FS=(${(@f)"$(find "$D"/ -type f -${CS-i}name "*$@*")"})
 
@@ -122,10 +123,11 @@ mus() {
   fi
 
   local FILE="${FS[1]}"
-  [[ -d "$FILE" ]] && echo "$FILE"
   if [[ -v LIST ]]; then
+    [[ -d "$FILE" ]] && echo "$FILE"
     ls "$FILE"
   else
+    echo "$FILE"
     mpv ${SHUFFLE+--shuffle} ${LOOP+--loop-playlist} "$FILE"
   fi
 }
