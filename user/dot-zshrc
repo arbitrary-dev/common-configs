@@ -815,8 +815,10 @@ awk-cookies-txt() {
 }
 
 cal() {
-  gcal -s1 -qLV -n ${1:-.+} \
-  | tail +5 \
+  local n=5
+  [[ "$1" =~ ^[0-9] ]] && n=1
+  gcal -s1 -qLV -n ${@:-.+} \
+  | tail +$n \
   | perl -p $MY_SCRIPTS/gcal-colors.pl \
   | less
 }
