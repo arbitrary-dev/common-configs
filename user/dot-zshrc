@@ -89,10 +89,14 @@ mus() {
 
   while true; do
     case "$1" in
-      s) local SHUFFLE ;;
-      l) local LOOP ;;
+      s)  local SHUFFLE
+          echo "Playlist shuffled!"
+          ;;
+      l)  local LOOP
+          echo "Loop enabled."
+          ;;
       ls) local LIST ;;
-      *) break ;;
+      *)  break ;;
     esac
     shift
   done
