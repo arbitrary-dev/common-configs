@@ -88,7 +88,7 @@ _mus_find() {
   [[ -z "$1" ]] && return
 
   # Case-sensitive search
-  [[ "$@" =~ [A-Z] ]] && local cs
+  echo $1 | grep -q [A-ZА-Я] && local cs
 
   # Search for directories first
   local fs=(${(@f)"$(find "$dir"/ -type d -${cs-i}name "*$1*")"})
