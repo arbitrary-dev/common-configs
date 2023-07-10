@@ -85,57 +85,57 @@ ytm() {
 }
 
 mus() {
-  local D=${MUS:-~/Music}
+  local dir=${MUS:-~/Music}
 
   while true; do
     case "$1" in
-      s)  local SHUFFLE
+      s)  local shuffle
           echo "Playlist shuffled!"
           ;;
-      l)  local LOOP
+      l)  local loop
           echo "Loop enabled."
           ;;
-      ls) local LIST ;;
+      ls) local list ;;
       *)  break ;;
     esac
     shift
   done
 
   if (( ! $# )); then
-    ls "$D"
+    ls "$dir"
     return
   fi
 
   # Case-sensitive search
-  [[ "$@" =~ [A-Z] ]] && local CS
+  [[ "$@" =~ [A-Z] ]] && local cs
 
   # Search for directories first
-  local FS=(${(@f)"$(find "$D"/ -type d -${CS-i}name "*${*}*")"})
+  local fs=(${(@f)"$(find "$dir"/ -type d -${cs-i}name "*${*}*")"})
   # ...then file names
-  (( ! $#FS )) && FS=(${(@f)"$(find "$D"/ -type f -${CS-i}name "*${*}*")"})
+  (( ! $#fs )) && fs=(${(@f)"$(find "$dir"/ -type f -${cs-i}name "*${*}*")"})
   # ...then path names
-  (( ! $#FS )) && FS=(${(@f)"$(find "$D"/ -type f -${CS-i}path "*${*}*")"})
+  (( ! $#fs )) && fs=(${(@f)"$(find "$dir"/ -type f -${cs-i}path "*${*}*")"})
 
-  if (( $#FS > 1 )); then
-    for F in $FS; do echo ${F#"$D"/}; done
+  if (( $#fs > 1 )); then
+    for f in $fs; do echo ${f#"$dir"/}; done
     echo
-    vared -p "Which one? " -c FILE
+    vared -p "Which one? " -c file
     echo
     # Recurse!
-    mus "$FILE"
+    mus "$file"
     return $?
-  elif (( ! $#FS )); then
+  elif (( ! $#fs )); then
     echo "No matches found!"
     return 1
   fi
 
-  local FILE="${FS[1]}"
-  if [[ -v LIST ]]; then
-    [[ -d "$FILE" ]] && echo "$FILE"
-    ls "$FILE"
+  local file="${fs[1]}"
+  if [[ -v list ]]; then
+    [[ -d "$file" ]] && echo "$file"
+    ls "$file"
   else
-    echo "$FILE"
-    mpv ${SHUFFLE+--shuffle} ${LOOP+--loop-playlist} "$FILE"
+    echo "$file"
+    mpv ${shuffle+--shuffle} ${loop+--loop-playlist} "$file"
   fi
 }
 
