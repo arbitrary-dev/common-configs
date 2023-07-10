@@ -55,9 +55,13 @@ setup-ccache() {
 export EDITOR="vim"
 export LESS="-iSXFR"
 
-alias sr='. /etc/profile;. ~/.zshrc;. ~/.zshenv 2> /dev/null'
-alias vr="vim ~/.zshrc && sr"
-alias ve="vim ~/.zshenv && sr"
+sr() {
+  . /etc/profile 2> /dev/null
+  . ~/.zshrc
+  . ~/.zshenv 2> /dev/null
+}
+alias vr="vim ~/.zshrc && . ~/.zshrc"
+alias ve="vim ~/.zshenv && . ~/.zshenv"
 svr() { vim ${ZSHRC_D:-/etc/zsh/zshrc.d}/misc; }
 
 # Copy to clipboard
