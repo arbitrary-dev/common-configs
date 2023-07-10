@@ -273,8 +273,8 @@ wlv() {
       (.veja_atrums|tonumber|round) as $a
       | (.brazmas|tonumber|round) as $b
       | @text "\($a)-\($b) m/s"
-      | if $a < 10 then " " + . end
-      | if $b < 10 then " " + . end;
+      | if $a < 10 then " " + . else . end
+      | if $b < 10 then " " + . else . end;
 
     def fmt:
       {
