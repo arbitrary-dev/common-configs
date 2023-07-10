@@ -105,9 +105,12 @@ mus() {
   # Case-sensitive search
   [[ "$@" =~ [A-Z] ]] && local CS
 
-  # Search for directories first, then files
-  local FS=(${(@f)"$(find "$D"/ -type d -${CS-i}name "*$@*")"})
-  (( ! $#FS )) && FS=(${(@f)"$(find "$D"/ -type f -${CS-i}name "*$@*")"})
+  # Search for directories first
+  local FS=(${(@f)"$(find "$D"/ -type d -${CS-i}name "*${*}*")"})
+  # ...then file names
+  (( ! $#FS )) && FS=(${(@f)"$(find "$D"/ -type f -${CS-i}name "*${*}*")"})
+  # ...then path names
+  (( ! $#FS )) && FS=(${(@f)"$(find "$D"/ -type f -${CS-i}path "*${*}*")"})
 
   if (( $#FS > 1 )); then
     for F in $FS; do echo ${F#"$D"/}; done
