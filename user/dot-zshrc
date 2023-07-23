@@ -90,11 +90,16 @@ _mus_find() {
   # Case-sensitive search
   echo $1 | grep -q [A-ZА-Я] && local cs
 
-  # Search for directories first
-  local fs=(${(@f)"$(find "$dir"/ -type d -${cs-i}name "*$1*")"})
-  # ...then file names
-  (( ! $#fs )) && fs=(${(@f)"$(find "$dir"/ -type f -${cs-i}name "*$1*")"})
-  # ...then path names
+  local fs
+  if [[ "$1" != */* ]]; then
+    # Search for directories first
+    fs=(${(@f)"$(find "$dir"/ -type d -${cs-i}name "*$1*")"})
+    # ...then file names
+    (( ! $#fs )) && fs=(${(@f)"$(find "$dir"/ -type f -${cs-i}name "*$1*")"})
+  fi
+  # ...then path names for dirs
+  (( ! $#fs )) && fs=(${(@f)"$(find "$dir"/ -type d -${cs-i}path "*$1*")"})
+  # ...then path names for files
   (( ! $#fs )) && fs=(${(@f)"$(find "$dir"/ -type f -${cs-i}path "*$1*")"})
 
   if (( $#fs > 1 )); then
