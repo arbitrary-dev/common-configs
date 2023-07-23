@@ -102,7 +102,7 @@ _mus_find() {
   # ...then path names for files
   (( ! $#fs )) && fs=(${(@f)"$(find "$dir"/ -type f -${cs-i}path "*$1*")"})
 
-  if (( $#fs > 1 )); then
+  if (( $#fs > 1 )) && [[ ! -v list ]]; then
     for f in $fs; do >&2 echo ${f#"$dir"/}; done
     >&2 echo
     # `vared -p` doesn't work in subshell for old ZSH:
