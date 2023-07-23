@@ -129,7 +129,7 @@ mus() {
   while true; do
     case "$1" in
       s)  local shuffle
-          echo "Playlist shuffled!"
+          echo "Playlist will be shuffled!"
           ;;
       l)  local loop
           echo "Loop enabled."
