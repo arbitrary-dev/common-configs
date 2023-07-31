@@ -132,9 +132,9 @@ alias bfs-df="sudo btrfs fi df"
 alias bfs-comp="sudo compsize"
 alias bfs-defrag="sudo btrfs filesystem defragment -r -clzo"
 
-alias cpv="rsync -rh --info=progress2"
+alias cpv="rsync -ah --info=progress2"
 # Should remove empty source dirs afterwards
-alias mvv="rsync -rh --info=progress2 --remove-source-files"
+alias mvv="rsync -ah --info=progress2 --remove-source-files"
 
 alias bat=battery
 alias ccs="CCACHE_DIR=/var/cache/ccache watch -d -n13 ccache -sv"
