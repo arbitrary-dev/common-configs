@@ -42,6 +42,7 @@ app.slack.com##.p-huddle_sidebar_footer--css_animation_done.p-huddle_sidebar_foo
 bible.com##main:style(margin-top:0!important)
 bible.com##main > div > .sticky
 bible.com##header,#bottom-widgets
+bible.com##*[class*=version-copyright]
 
 !!! DeepL Translate !!!
 
@@ -72,3 +73,4 @@ www.youtube.com###clarify-box
 ! Block "Install app" button in Omnibox
 ! https://github.com/ungoogled-software/ungoogled-chromium/issues/1854#issuecomment-1593668489
 ||^$csp=manifest-src 'none'
+
