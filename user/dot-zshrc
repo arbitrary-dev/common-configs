@@ -66,13 +66,18 @@ ytm() {
     return 1
   fi
 
+  local args=()
   local format="bestaudio/best"
-  while true; do
+  while (( $# )); do
     case "$1" in
       w)  local format="worstaudio/worst" ;;
       bc) local bigcache ;;
       ns) local no_shuffle ;;
-      *)  break ;;
+      *)  if [[ "$1" =~ ^[a-zA-Z0-9_-]{11}$ ]]; then
+            args+=("http://youtu.be/$1")
+          else
+            args+=("$1")
+          fi ;;
     esac
     shift
   done
@@ -84,7 +89,7 @@ ytm() {
       --ytdl-format=$format \
       ${bigcache---demuxer-max-bytes=5MiB} \
       ${bigcache+--demuxer-max-bytes=150MiB} \
-      ${=@:-${no_shuffle---shuffle} $YTM_DEF_PLAYLIST}
+      ${=args[@]:-${no_shuffle---shuffle} $YTM_DEF_PLAYLIST}
 }
 
 _mus_find() {
