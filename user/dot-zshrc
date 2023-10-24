@@ -260,11 +260,33 @@ ls-files() {
   find $* -type f | sed -E "s!($joined)/!!" | sort
 }
 
+export TODO_FILE="$MY_DOCS/_misc/todo.txt"
 todo() {
-  local t=$(join_with - $0 $*)
-  vim $MY_DOCS/_misc/"$t".txt
+  local file="${TODO_FILE%.*}"
+  (( $# )) && file+="-`join_with - $*`"
+  file+=".${TODO_FILE##*.}"
+  vim "$file"
 }
-notes() { vim $MY_DOCS/_misc/notes.md; }
+# Add todo
+t() {
+  local what
+  (( $# )) && what="1i $*" || what="0r /dev/stdin"
+  sed -i "$what" "$TODO_FILE"
+  (( ! $? )) && echo "Todo added!"
+}
+# Todo expenses
+te() { t `date +%m/%d` $@; }
+
+export NOTES_FILE="$MY_DOCS/_misc/notes.md"
+alias notes='vim "$NOTES_FILE"'
+n() {
+  (
+    echo -e "\n---\n"
+    (( $# )) && echo "$@" || cat -
+  ) >>"$NOTES_FILE"
+  (( ! $? )) && echo "Noted!"
+}
+
 recipes() { vim $MY_DOCS/recipes/README.md; }
 
 alias wine32="WINEARCH=win32 WINEPREFIX=~/.wine32 wine"
