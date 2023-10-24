@@ -56,7 +56,8 @@ export EDITOR="vim"
 export LESS="-iSXFR"
 
 sr() {
-  . /etc/profile 2> /dev/null
+  # Is it needed?
+  #. /etc/profile 2> /dev/null
   . ~/.zshrc
   . ~/.zshenv 2> /dev/null
 }
@@ -93,6 +94,8 @@ xp() {
     return 1
   fi
 }
+# X paste, but with newline
+xpn() { xp; echo; }
 
 alias ecurr="sudo watch -ctn 30 genlop -c"
 alias ehist="sudo genlop -it"
@@ -171,7 +174,7 @@ rs() {
 }
 
 bc() { command bc -l <<< "$*"; }
-dc() { date --date "$@"; }
+dc() { date --date "$*"; }
 
 alias epoch-seconds="date +%s"
 
