@@ -116,6 +116,7 @@ ytm() {
       --ytdl-format=$format \
       ${bigcache---demuxer-max-bytes=5MiB} \
       ${bigcache+--demuxer-max-bytes=150MiB} \
+      --ytdl-raw-options=yes-playlist=,lazy-playlist= \
       ${=args[@]:-${no_shuffle---shuffle} $YTM_DEF_PLAYLIST}
 }
 
