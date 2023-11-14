@@ -26,39 +26,66 @@ alias ytm-pls="ytm bc --ytdl-raw-options=yes-playlist="
 ytw() {
   local format="worstvideo[height>=240]+worstaudio[language=?en]/worst[height>=240]/hls-655/0"
 
-  local flags=()
-  while true; do
+  local args=()
+  while (( $# )); do
     case $1 in
-      -f) format="$2"
-          shift 2 ;;
-      -p) flags+=(--ytdl-raw-options=proxy=["$2"])
-          shift 2 ;;
-      -*) flags+=($1)
-          shift ;;
-      *)  break ;;
+      -fs)
+        args+=(--fullscreen) ;;
+      -f)
+        format="$2"
+        shift ;;
+      --list)
+        local list=1
+        break ;;
+      -p)
+        local proxy+="proxy=[$2]"
+        shift ;;
+      *)
+        if [[ "$1" =~ ^[A-Za-z0-9_-]{11}$ ]]; then
+          args+=("http://youtu.be/$1")
+        else
+          args+=("$1")
+        fi ;;
     esac
+    shift
   done
 
-  if (( ! $# )); then
+  local c="/tmp/.ytw-cookies"
+  if [ ! -f "$c" ]; then
     if [ -z "$YTW_COOKIES" ]; then
       echo "Please set YTW_COOKIES!"
       return 1
     fi
-    local c="/tmp/.ytw-cookies"
-    if [ ! -f "$c" ]; then
-      echo $YTW_COOKIES | basenc --decode --base64 | gunzip > "$c"
-    fi
-    set -A argv --ytdl-raw-options=yes-playlist=,cookies="$c" \
-                https://youtube.com/playlist?list=WL
+    echo $YTW_COOKIES | basenc --decode --base64 | gunzip > "$c"
   fi
-  if command -v gnome-session-inhibit &>/dev/null; then
+
+  if (( ! ${#args} )); then
+    if [ -v list ]; then
+      args+=(
+        --yes-playlist --playlist-reverse
+        --cookies="$c" --quiet --dump-json
+        https://youtube.com/playlist?list=WL
+      )
+    else
+      args+=(
+        --ytdl-raw-options=yes-playlist=,lazy-playlist=,cookies="$c","$proxy"
+        https://youtube.com/playlist?list=WL
+      )
+    fi
+  fi
+
+  if [ -v list ]; then
+    yt-dlp "${=args[@]}" \
+    | jq -r '@text "[\(.id)] \(.duration_string) \(.title)"'
+  elif command -v gnome-session-inhibit &>/dev/null; then
     # Temporary prevents going to sleep on PinePhone
     gnome-session-inhibit --inhibit idle:suspend \
-      mpv --ytdl-format="$format" "${=flags[@]}" "${=@}"
+      mpv --ytdl-format="$format" "${=args[@]}"
   else
-    mpv --ytdl-format="$format" ${=flags[@]} "$@"
+    mpv --ytdl-format="$format" "${=args[@]}"
   fi
 }
+
 # YouTube music
 ytm() {
   if [[ -z "$@" && -z "$YTM_DEF_PLAYLIST" ]]; then
