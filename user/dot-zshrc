@@ -242,10 +242,21 @@ alias me="memo --edit"
 alias ssha='eval "`ssh-agent -s`"'
 # Kill SSH agent
 alias sshk='ssh-agent -k'
+
 # Setup SSH terminal
 ssht() {
   ssh $1 mkdir -p .terminfo/r
   scp /usr/share/terminfo/r/rxvt-unicode-256color $1:.terminfo/r
+}
+
+# Temporary run SSH daemon
+sshdt() {
+  sudo sh -c '
+    rc-service sshd start
+    read -sn1 -p "Press any key to stop... "
+    echo
+    rc-service sshd stop
+  '
 }
 
 vi() {
