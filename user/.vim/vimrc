@@ -35,10 +35,6 @@ if filereadable(expand('~/.vim/autoload/plug.vim'))
   hi IndentGuidesOdd  ctermbg=234
   hi IndentGuidesEven ctermbg=233
 
-  " Clipboard for Wayland workaround
-  " https://github.com/vim/vim/issues/5157
-  Plug 'jasonccox/vim-wayland-clipboard'
-
   call plug#end()
 endif
 

@@ -44,11 +44,6 @@ stty sane
 # Usage: p1 < patchfile
 alias p1="patch -p1"
 
-setup-distcc() {
-  [[ $PATH != *distcc* ]] \
-  && export PATH="/usr/lib/distcc/bin:${PATH}"
-}
-
 setup-ccache() {
   [[ $PATH != *ccache* ]] && export PATH="/usr/lib/ccache/bin:$PATH"
   export CCACHE_DIR="/home/.ccache"
@@ -174,6 +169,11 @@ alias susp="loginctl suspend-then-hibernate"
 
 alias df="df -h"
 alias du="du -h"
+
+setup-distcc() {
+  [[ $PATH != *distcc* ]] \
+  && export PATH="/usr/lib/distcc/bin:${PATH}"
+}
 
 alias distcc-mon="DISTCC_DIR=/var/tmp/portage/.distcc distccmon-text 3"
 alias distcc-mon-h="DISTCC_DIR=/home/.portage/tmp/portage/.distcc distccmon-text 3"
