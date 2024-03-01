@@ -1,31 +1,26 @@
 [core]
-  editor = vim
-  pager = "less -iSXFR"
+	editor = vim
+	pager = "less -iSXFR"
 [push]
-  default = simple
+	default = simple
 [merge]
-  tool = vimdiff
-  conflictstyle = diff3
+	tool = vimdiff
+	conflictstyle = diff3
 [mergetool]
-  keepBackup = false
-  prompt = false
+	keepBackup = false
+	prompt = false
 [pager]
-  status = true
+	status = true
 [diff]
-  noprefix = true
+	noprefix = true
 [color "interactive"]
-  prompt = red reverse
+	prompt = red reverse
 [rebase]
-  autosquash = true
+	autosquash = true
 [credential]
-  helper = cache
+	helper = cache
 [filter "lfs"]
-  smudge = git-lfs smudge -- %f
-  process = git-lfs filter-process
-  required = true
-  clean = git-lfs clean -- %f
-[safe]
-  directory = /var/db/repos/pf4public
-  directory = /var/db/repos/guru
-  directory = /var/db/repos/alxu
-  directory = /var/db/repos/arbitrary-dev
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f

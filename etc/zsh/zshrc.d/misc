@@ -98,13 +98,14 @@ alias ecurr="sudo watch -ctn 30 genlop -c"
 alias ehist="sudo genlop -it"
 alias ecln="sudo emerge --ask --depclean"
 alias eclnd="sudo eclean-dist --deep --fetch-restricted"
+alias erm="sudo emerge --deselect"
 
 elog() {
   sudo sh -c '
     h=$(( `tput lines` - 4 ))
     log=/tmp/portage/*/'$1'*/temp/build.log
-    [ ! -f $log ] && log=/home/.portage-tmpdir/portage/*/'$1'*/temp/build.log
-    [ -f $log ] && >&2 echo $log || return 1
+    [ ! -f $log ] && log=/opt/.portage_no-tmpfs/portage/*/'$1'*/temp/build.log
+    [ -f $log ] && >&2 echo $log || exit 1
     log=`ls $log`
     tail -fn$h $log \
     | sed -E -e "s/^ *\"?i686-pc-linux-gnu-([^ ]+)\"? .*-o \"?([^ &:\"]+).*/\1 ... -o \2/" \
@@ -122,7 +123,7 @@ esync() {
 
   if sudo sh -c "
     printf 'Syncing... '
-    emaint sync ${1:+-r} ${1:--a} &> $sync_log
+    emaint sync ${1:+--repo} ${1:---auto} &> $sync_log
   "
   then
     echo "done"
@@ -144,6 +145,14 @@ emrg() {
   fi
 }
 
+emrg-resume() {
+  if (( $# )); then
+    sudo sh -c "FEAUTURES=keepwork emerge --quiet-build $@"
+  else
+    sudo sh -c "FEAUTURES=keepwork emerge --quiet-build --resume"
+  fi
+}
+
 alias bfs-usage="sudo btrfs filesystem usage"
 alias bfs-du="sudo btrfs fi du"
 alias bfs-df="sudo btrfs fi df"
@@ -152,10 +161,10 @@ alias bfs-defrag="sudo btrfs filesystem defragment -r -clzo"
 
 alias cpv="rsync -ah --info=name,progress"
 # Should remove empty source dirs afterwards
-alias mvv="rsync -ah --info=progress2 --remove-source-files"
+alias mvv="rsync -ah --info=name,progress --remove-source-files"
 
 alias bat=battery
-alias ccs="CCACHE_DIR=/var/cache/ccache watch -d -n13 ccache -sv"
+alias ccs="CCACHE_DIR=/var/cache/ccache watch -d -n13 ccache --show-stats"
 alias ptop="sudo powertop"
 alias psw="sudo /usr/local/bin/psw"
 alias rn="perl-rename"

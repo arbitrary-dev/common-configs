@@ -6,25 +6,31 @@ fi
 
 export PS1="%B%F{green}$PS1"
 
+alias abc="echo {A..Z}"
 alias hanako-fm="mpv https://musicbird.leanstream.co/JCB069-MP3"
 
 alias yt="yt-dlp"
 # List available formats for YT video
 alias ytf="yt --list-formats"
-# Download YT audio in best quality
+## Download YT audio in best quality
 #
 # ...you can now simply use --download-sections "*93-111" to download
 # the part between 93 seconds and 111 seconds. For more accurate cutting,
 # you can also use --force-keyframes-at-cuts
-alias yta="yt -f bestaudio[ext=m4a]"
+alias yta="yt -f bestaudio -P ~/Music/_unsorted"
 # Download YT video in best quality
-alias ytv="yt -f bestvideo+bestaudio"
+alias ytv="yt -f bestvideo+bestaudio/best -P ~/Videos/_unsorted"
 # YouTube playlist music
 alias ytm-pls="ytm bc --ytdl-raw-options=yes-playlist="
 
-# YouTube watch
+## YouTube watch
+#
+# To prepare cookies:
+# $ xp | awk-cookies-txt > /tmp/.ytw-cookies
+# Verify that they are working, and then:
+# $ export YTW_COOKIES=`gzip --stdout /tmp/.ytw-cookies | basenc --base64`
 ytw() {
-  local format="worstvideo[height>=240]+worstaudio[language=?en]/worst[height>=240]/hls-655/0"
+  local format="worstvideo[height>=240]+worstaudio[language=?en]/worst[height>=240]/hls-655/0/original"
 
   local args=()
   while (( $# )); do
@@ -82,7 +88,7 @@ ytw() {
     gnome-session-inhibit --inhibit idle:suspend \
       mpv --ytdl-format="$format" "${=args[@]}"
   else
-    mpv --ytdl-format="$format" "${=args[@]}"
+    mpv --fullscreen --msg-level="ffmpeg=no,EDL=no" --ytdl-format="$format" "${=args[@]}"
   fi
 }
 
@@ -120,89 +126,6 @@ ytm() {
       ${=args[@]:-${no_shuffle---shuffle} $YTM_DEF_PLAYLIST}
 }
 
-_mus_find() {
-  [[ -z "$1" ]] && return
-
-  # Case-sensitive search
-  echo $1 | grep -q [A-ZА-Я] && local cs
-
-  local fs
-  if [[ "$1" != */* ]]; then
-    # Search for directories first
-    fs=(${(@f)"$(find "$dir"/ -type d -${cs-i}name "*$1*")"})
-    # ...then file names
-    (( ! $#fs )) && fs=(${(@f)"$(find "$dir"/ -type f -${cs-i}name "*$1*")"})
-  fi
-  # ...then path names for dirs
-  (( ! $#fs )) && fs=(${(@f)"$(find "$dir"/ -type d -${cs-i}path "*$1*")"})
-  # ...then path names for files
-  (( ! $#fs )) && fs=(${(@f)"$(find "$dir"/ -type f -${cs-i}path "*$1*")"})
-
-  if (( $#fs > 1 )) && [[ ! -v list ]]; then
-    for f in $fs; do >&2 echo ${f#"$dir"/}; done
-    >&2 echo
-    # `vared -p` doesn't work in subshell for old ZSH:
-    # _mus_find:vared: ZLE not enabled
-    >&2 read ans?"Which one? "
-    >&2 echo
-    case "$ans" in
-      all) ;;
-      *) # Recurse!
-         _mus_find "$ans"
-         return $? ;;
-    esac
-  elif (( ! $#fs )); then
-    >&2 echo "No matches found!"
-    return 1
-  fi
-
-  for f in $fs; do echo $f; done
-}
-
-mus() {
-  local dir=${MUS:-~/Music}
-
-  while true; do
-    case "$1" in
-      s)  local shuffle
-          echo "Playlist will be shuffled!"
-          ;;
-      l)  local loop
-          echo "Loop enabled."
-          ;;
-      ls) local list ;;
-      *)  break ;;
-    esac
-    shift
-  done
-
-  if (( ! $# )); then
-    ls "$dir"
-    return
-  fi
-
-  local files=()
-  while (( $# )); do
-    files+=(${(@f)"$(_mus_find "$1")"})
-    shift
-  done
-  (( ! $#files )) && return 1
-
-  if [[ -v list ]]; then
-    for f in "${files[@]}"; do
-      if [[ -d "$f" ]]; then
-        echo "${f#"$dir"/}/"
-        ls "$f"
-      else
-        echo "${f#"$dir"/}"
-      fi
-    done
-  else
-    for f in "${files[@]}"; do echo "$f"; done
-    mpv ${shuffle+--shuffle} ${loop+--loop-playlist} "${files[@]}"
-  fi
-}
-
 # Download YT video using free proxies
 ytp() {
   local proxies=("${(@f)$(
@@ -233,6 +156,7 @@ alias at="rg --pcre2 '(((//|/?\*|#) )|\*\*|)\b(TODO|FIXME)\b(?!(:|.*INT-\d)).*$'
 alias feh="feh --auto-rotate --geometry 640x480 --image-bg black -Z -."
 alias lp-a4="lp -o fit-to-page -o PageSize=A4 -o PageRegion=A4 -o PaperDimension=A4 -o ImageableArea=A4"
 alias sway-list-windows="swaymsg -t get_tree | grep app_id"
+alias nf=neofetch
 mic() { ffmpeg -y -f pulse -ac 1 -i default /tmp/mic-`date +%Y-%m-%d-%H%M%S`.mp3; }
 
 alias m="memo"
@@ -412,18 +336,22 @@ weather() {
     precipMM,
     tempC,
     uvIndex,
-    wind: (.winddir16Point + \", \" + .windspeedKmph + \" Kmph\"),
+    wind: fmt_wind,
     desc: (.weatherDesc | map(.value) | join(\"; \"))
   }"
-  curl -s wttr.in?format=j1 \
-  | jq "[
+  curl -s "wttr.in/$1?format=j1" \
+  | jq "
+  def fmt_wind:
+    @text \"\((.windspeedKmph|tonumber)*1000/60/60|round) m/s\";
+
+  [
     (.current_condition[0] |{
       localObsDateTime,
       humidity,
       precipMM,
       temp_C,
       uvIndex,
-      wind: (.winddir16Point + \", \" + .windspeedKmph + \" Kmph\"),
+      wind: fmt_wind,
       desc: (.weatherDesc | map(.value) | join(\"; \"))
     }),
     (.weather[0] | {
@@ -432,7 +360,7 @@ weather() {
         | map(select((.time | tonumber / 100) >= (`date +%_H` / 3 | floor) * 3 ))
         | map($data)
     }),
-    (.weather[1] | {
+    (.weather[1:][] | {
       date: .date,
       hourly: .hourly | map($data)
     })
@@ -823,7 +751,7 @@ rec-screen() {
   echo "Screen saver turned on."
 }
 
-# Installs extension for ungoogled-chromium
+## Install extension (by ID) in ungoogled-chromium.
 #
 # Set "Always promt for install" in case of issues:
 # chrome://flags/#extension-mime-request-handling
@@ -900,8 +828,8 @@ purchase() {
 }
 
 ## Converts raw cookies copied from Chrome into Netscape format.
- #
- # In Chrome: F12 → Application → Storage → Cookies
+#
+# In Chrome: F12 → Application → Storage → Cookies
 awk-cookies-txt() {
   awk '
     BEGIN {
@@ -922,3 +850,7 @@ cal() {
   | perl -p $MY_SCRIPTS/gcal-colors.pl \
   | less
 }
+
+# sudo docker tag quay.io/jupyter/scipy-notebook:2024-02-13 jupyter-scipy
+alias jpy-scipy='sudo docker run -it --rm -p 8888:8888 -v `pwd`:/home/jovyan/work jupyter-scipy'
+alias jpy-r='sudo docker run -it --rm -p 8888:8888 -v `pwd`:/home/jovyan/work jupyter-r'

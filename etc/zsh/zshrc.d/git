@@ -198,9 +198,9 @@ gmb() { git merge-base ${2:-master} ${1:-HEAD}; }
 # Git ignore file
 alias gig="git update-index --assume-unchanged"
 # Git unignore file
-alias gug="git update-index --no-assume-unchanged"
+alias guig="git update-index --no-assume-unchanged"
 # Git list ignored files
-alias gli='git ls-files -v `git rev-parse --show-toplevel` | grep ^[a-z]'
+alias gls-ig='git ls-files -v `git rev-parse --show-toplevel` | grep ^[a-z]'
 
 # Removes all orphaned data immediately
 alias git-gc-aggressive="git reflog expire --expire=now --all && git gc --prune=now --aggressive"
@@ -212,6 +212,9 @@ alias _gdfc="GIT_DIR=_git gdfc"
 alias _glg="GIT_DIR=_git glg"
 alias _ga="GIT_DIR=_git ga"
 alias _gcm="GIT_DIR=_git gcm"
+alias _gcf="GIT_DIR=_git gcf"
 alias _gco="GIT_DIR=_git gco"
+alias _gp="GIT_DIR=_git gp"
+alias _gri="GIT_DIR=_git gri"
 alias _grm="GIT_DIR=_git grm"
 alias _grst="GIT_DIR=_git grst"
