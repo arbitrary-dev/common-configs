@@ -58,6 +58,45 @@ deepl.com##div[aria-label^="Characters used"] > button > div
 mail.google.com###nav
 mail.google.com###views:style(top:0)
 
+!!! YouTube !!!
+
+! Dim recommendations
+youtube.com###secondary:style(filter:blur(11px);opacity:.15)
+youtube.com##a.ytp-suggestion-set:style(filter:blur(11px);opacity:.3!important)
+youtube.com##a.ytp-suggestion-set:hover:style(filter:none;opacity:1!important)
+
+! Remove some buttons
+youtube.com##ytd-download-button-renderer
+youtube.com##yt-button-view-model:has(button[aria-label="Clip"])
+youtube.com###voice-search-button
+
+!!! Odysee !!!
+
+! Dim recommendations
+odysee.com##section.file-page__recommended:style(filter:blur(11px);opacity:.15)
+
+! Remove some buttons
+odysee.com##button[aria-label="Go live"]
+odysee.com##button[aria-label="Post an article"]
+odysee.com##button[aria-label="Support this content"]
+odysee.com##button[aria-label="Repost this content"]
+odysee.com##button[aria-label="Join"]
+odysee.com##button[aria-label="Credits"]
+odysee.com##button[aria-label="Cash"]
+odysee.com##div[aria-label^="Immediately spendable:"]
+
+! Remove monetization counter
+odysee.com##div.card__bottom-actions > div
+
+! Remove commentary filters / refresh panel
+odysee.com##div.card__title-actions-container
+
+! Remove create comment label
+odysee.com##label[for="create__comment"]
+
+! Format comment char count
+odysee.com##span.comment__char-count-mde:style(opacity:.2;margin-bottom:0!important)
+
 !!! MISC !!!
 
 ! 8/1/2020 https://rutracker.org
@@ -66,9 +105,6 @@ rutracker.org##.bn-products.bn-topic
 
 ! 2021-05-06 https://system76.com
 system76.com##header.constrained:nth-of-type(1)
-
-! 2021-09-08 https://www.youtube.com
-www.youtube.com###clarify-box
 
 ! Block "Install app" button in Omnibox
 ! https://github.com/ungoogled-software/ungoogled-chromium/issues/1854#issuecomment-1593668489
