@@ -110,3 +110,9 @@ system76.com##header.constrained:nth-of-type(1)
 ! https://github.com/ungoogled-software/ungoogled-chromium/issues/1854#issuecomment-1593668489
 ||^$csp=manifest-src 'none'
 
+! Block heart button from fullscreen mode of a player
+angel.com##button:has(#Heart)
+
+! Increase font size
+wikireading.ru##article p:style(font-size:1.1em)
+
