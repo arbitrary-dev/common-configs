@@ -58,10 +58,12 @@ biblegateway.com##.footer-menu-chunk.signup
 !!! DeepL Translate !!!
 
 deepl.com##aside[aria-labelledby*=banner]
-deepl.com##*[class^=Quote-module--quoteInner-] > *:not(*[class^=Quote-module--quoteIcon-]):style(visibility:hidden)
+deepl.com##*[class^=Quote-module--quoteInner-] > *:not(*[class^=Quote-module--quoteIcon]):style(visibility:hidden)
 deepl.com##div[data-testid=cookie-banner-strict]
-deepl.com##button[aria-label="Product updates"]
+!deepl.com##button[aria-label^="Product updates"]
 deepl.com##div[aria-label^="Characters used"] > button > div
+!deepl.com###primary-heading-container
+deepl.com##div[class^=BasePageHeader-module--childContainer] > div
 
 !!! Gmail !!!
 
