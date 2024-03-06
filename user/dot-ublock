@@ -47,6 +47,14 @@ bible.com##header,#bottom-widgets
 bible.com##*[class*=version-copyright]
 bible.com##div[class^=ChapterContent_] ~ .flex:style(visibility:hidden)
 
+!!! Bible Gateway !!!
+
+biblegateway.com##div[aria-label="user notice"]
+biblegateway.com##.search-form-nav > div
+biblegateway.com##.sidebar-tabs
+biblegateway.com##.passage-tools
+biblegateway.com##.footer-menu-chunk.signup
+
 !!! DeepL Translate !!!
 
 deepl.com##aside[aria-labelledby*=banner]
