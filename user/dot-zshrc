@@ -240,7 +240,7 @@ t() {
   (( ! $? )) && echo "Todo added!"
 }
 # Todo expenses
-te() { t `date +%m/%d` $@; }
+te() { t `date +%m/%d` $@ | sed 's/^0//'; }
 
 export NOTES_FILE="$MY_DOCS/_misc/notes.md"
 alias notes='vim "$NOTES_FILE"'
