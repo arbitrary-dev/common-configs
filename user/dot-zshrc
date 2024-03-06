@@ -12,12 +12,14 @@ alias hanako-fm="mpv https://musicbird.leanstream.co/JCB069-MP3"
 alias yt="yt-dlp"
 # List available formats for YT video
 alias ytf="yt --list-formats"
+
 ## Download YT audio in best quality
 #
 # ...you can now simply use --download-sections "*93-111" to download
 # the part between 93 seconds and 111 seconds. For more accurate cutting,
 # you can also use --force-keyframes-at-cuts
-alias yta="yt -f bestaudio -P ~/Music/_unsorted"
+alias yta="yt -f bestaudio -P \$MUS/_unsorted"
+
 # Download YT video in best quality
 alias ytv="yt -f bestvideo+bestaudio/best -P ~/Videos/_unsorted"
 # YouTube playlist music
