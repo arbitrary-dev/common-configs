@@ -856,3 +856,9 @@ cal() {
 # sudo docker tag quay.io/jupyter/scipy-notebook:2024-02-13 jupyter-scipy
 alias jpy-scipy='sudo docker run -it --rm -p 8888:8888 -v `pwd`:/home/jovyan/work jupyter-scipy'
 alias jpy-r='sudo docker run -it --rm -p 8888:8888 -v `pwd`:/home/jovyan/work jupyter-r'
+
+# MPV Android
+mpva() {
+  local file=`realpath -s $1`
+  am start -a android.intent.action.VIEW -d file://"$file" -t video/* is.xyz.mpv
+}
