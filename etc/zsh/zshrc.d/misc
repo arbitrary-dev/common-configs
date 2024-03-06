@@ -103,7 +103,7 @@ alias erm="sudo emerge --deselect"
 elog() {
   sudo sh -c '
     h=$(( `tput lines` - 4 ))
-    log=/tmp/portage/*/'$1'*/temp/build.log
+    log=/var/tmp/portage/*/'$1'*/temp/build.log
     [ ! -f $log ] && log=/opt/.portage_no-tmpfs/portage/*/'$1'*/temp/build.log
     [ -f $log ] && >&2 echo $log || exit 1
     log=`ls $log`
