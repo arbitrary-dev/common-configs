@@ -862,3 +862,43 @@ mpva() {
   local file=`realpath -s $1`
   am start -a android.intent.action.VIEW -d file://"$file" -t video/* is.xyz.mpv
 }
+
+# List all #FOSDEM24 events for a date
+fd24-all() {
+  local D=${1-`date +%Y-%m-%d`}
+  local Q='.schedule.day|map(select(.+@date == "'$D'"))
+    |.[].room[].event[]
+    |(.start + " [" + .room + "] " + .title + " " + .duration + "\n")
+  '
+  yq -r $Q $DWNL/fossdem24.xml \
+  | sed -E -e 's/ \([^\)]+\)]/]/' \
+           -e "s/&#39;/'/g" \
+           -e 's/&lt;li&gt;/- /g' \
+           -e 's_&lt;/?em&gt;_*_g' \
+           -e 's_&lt;a href=&#34;([^&]+)&#34;&gt;([^&]+)&lt;/a&gt;_[\1](\2)_g' \
+           -e 's_&[^;]+;(/?(p|li|ul)&gt;|)__g' \
+  | sort \
+  | less
+}
+
+# Show FOSDEM24 event/-s for a date, room and time
+fd24() {
+  local D=$1
+  local R=$2
+  local T=$3
+  local Q='
+    .schedule.day|map(select(.+@date == "'$D'"))|.[]
+    .room|map(select(.+@name|contains("'$R'")))|.[]
+    .event|map(select(.start|contains("'$T'")))|.[]
+    |(
+      .start + " [" + .room + "] " + .title + " " + .duration + "\n\n"
+      + .abstract + "\n\n\n"
+    )
+  '
+  yq -r "$Q" $DWNL/fossdem24.xml \
+  | sed -E -e "s/&#39;/'/g" \
+           -e 's/&lt;li&gt;/- /g' \
+           -e 's_&lt;/?em&gt;_*_g' \
+           -e 's_&lt;a href=&#34;([^&]+)&#34;&gt;([^&]+)&lt;/a&gt;_[\1](\2)_g' \
+           -e 's_&[^;]+;(/?(p|li|ul)&gt;|)__g'
+}
