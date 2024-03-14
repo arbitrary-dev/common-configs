@@ -98,6 +98,7 @@ alias ecurr="sudo watch -ctn 30 genlop -c"
 alias ehist="sudo genlop -it"
 alias ecln="sudo emerge --ask --depclean"
 alias eclnd="sudo eclean-dist --deep --fetch-restricted"
+alias eadd="sudo emerge --noreplace"
 alias erm="sudo emerge --deselect"
 
 elog() {
