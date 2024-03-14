@@ -57,13 +57,23 @@ biblegateway.com##.footer-menu-chunk.signup
 
 !!! DeepL Translate !!!
 
-deepl.com##aside[aria-labelledby*=banner]
-deepl.com##*[class^=Quote-module--quoteInner-] > *:not(*[class^=Quote-module--quoteIcon]):style(visibility:hidden)
 deepl.com##div[data-testid=cookie-banner-strict]
-!deepl.com##button[aria-label^="Product updates"]
-deepl.com##div[aria-label^="Characters used"] > button > div
-!deepl.com###primary-heading-container
+
+! Remove fancy buttons from header
 deepl.com##div[class^=BasePageHeader-module--childContainer] > div
+
+! Format text toolbar a bit
+deepl.com##d-textarea:style(padding-bottom:5px!important)
+deepl.com##div[class^=TextToolbar-]:style(min-height:32px!important)
+deepl.com##div[aria-label^="Characters used"]:style(font-size:9pt!important;opacity:.3)
+
+! Clean up text toolbar
+deepl.com##div[class^=TextToolbar-] > span:has(button[aria-label^=Share])
+deepl.com##div[class^=TextToolbar-] > span:has(button[aria-label^=Copy])
+
+! Clean up bottom
+deepl.com##div:has(>main)>div:last-child
+deepl.com##main:style(padding-bottom:300px)
 
 !!! Gmail !!!
 
