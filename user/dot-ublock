@@ -83,6 +83,8 @@ mail.google.com###views:style(top:0)
 
 !!! YouTube !!!
 
+youtube.com###share-targets
+
 ! Dim recommendations
 youtube.com###secondary:style(filter:blur(11px);opacity:.15)
 youtube.com##a.ytp-suggestion-set:style(filter:blur(11px);opacity:.3!important)
@@ -91,6 +93,7 @@ youtube.com##a.ytp-suggestion-set:hover:style(filter:none;opacity:1!important)
 ! Remove some buttons
 youtube.com##ytd-download-button-renderer
 youtube.com##yt-button-view-model:has(button[aria-label="Clip"])
+youtube.com##yt-button-view-model:has(button[aria-label="Thanks"])
 youtube.com###voice-search-button
 
 !!! Odysee !!!
@@ -138,4 +141,5 @@ angel.com##button:has(#Heart)
 
 ! Increase font size
 wikireading.ru##article p:style(font-size:1.1em)
+
 
