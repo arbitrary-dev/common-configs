@@ -72,8 +72,8 @@ deepl.com##div[class^=TextToolbar-] > span:has(button[aria-label^=Share])
 deepl.com##div[class^=TextToolbar-] > span:has(button[aria-label^=Copy])
 
 ! Clean up bottom
-deepl.com##div:has(>main)>div:last-child
-deepl.com##main:style(padding-bottom:300px)
+deepl.com##div:has(> main) > div:last-child
+deepl.com##main:style(padding-bottom:400px)
 
 !!! Gmail !!!
 
