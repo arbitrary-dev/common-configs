@@ -59,6 +59,13 @@ biblegateway.com##.footer-menu-chunk.signup
 
 deepl.com##div[data-testid=cookie-banner-strict]
 
+! Remove navigation strip garbage
+deepl.com##nav[class^=ProductNavigation] > div
+
+! Remove garbage from top
+deepl.com##main nav > div > div:first-child
+deepl.com##main:style(padding-top:0!important)
+
 ! Remove fancy buttons from header
 deepl.com##div[class^=BasePageHeader-module--childContainer] > div
 
@@ -70,10 +77,15 @@ deepl.com##div[aria-label^="Characters used"]:style(font-size:9pt!important;opac
 ! Clean up text toolbar
 deepl.com##div[class^=TextToolbar-] > span:has(button[aria-label^=Share])
 deepl.com##div[class^=TextToolbar-] > span:has(button[aria-label^=Copy])
+deepl.com###text-translator-section-heading + div > div:first-child > div > div:nth-child(3) > div:nth-child(5)
+deepl.com###text-translator-section-heading + div > div:first-child > div > div:nth-child(3) > div:nth-child(6)
 
 ! Clean up bottom
-deepl.com##div:has(> main) > div:last-child
-deepl.com##main:style(padding-bottom:400px)
+deepl.com##div:has(>main)>div:last-child
+deepl.com##main:style(padding-bottom:300px)
+deepl.com##div:has(> div > aside)
+deepl.com##div[class*=languageSelectorContainer]
+deepl.com##div[class*=socialMediaContainer]
 
 !!! Gmail !!!
 
