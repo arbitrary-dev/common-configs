@@ -96,6 +96,10 @@ mail.google.com###views:style(top:0)
 !!! YouTube !!!
 
 youtube.com###share-targets
+youtube.com##.ytp-paid-content-overlay
+
+! Clean up description
+youtube.com##div[slot=extra-content]
 
 ! Dim recommendations
 youtube.com###secondary:style(filter:blur(11px);opacity:.15)
@@ -153,5 +157,3 @@ angel.com##button:has(#Heart)
 
 ! Increase font size
 wikireading.ru##article p:style(font-size:1.1em)
-
-
