@@ -9,19 +9,18 @@ export PS1="%B%F{green}$PS1"
 alias abc="echo {A..Z}"
 alias hanako-fm="mpv https://musicbird.leanstream.co/JCB069-MP3"
 
-alias yt="yt-dlp"
 # List available formats for YT video
-alias ytf="yt --list-formats"
+alias ytf="yt-dlp --list-formats"
 
 ## Download YT audio in best quality
 #
 # ...you can now simply use --download-sections "*93-111" to download
 # the part between 93 seconds and 111 seconds. For more accurate cutting,
 # you can also use --force-keyframes-at-cuts
-alias yta="yt -f bestaudio -P \$MUS/_unsorted"
+alias yta="yt-dlp -f bestaudio -P \$MUS/_unsorted"
 
 # Download YT video in best quality
-alias ytv="yt -f bestvideo+bestaudio/best -P ~/Videos/_unsorted"
+alias ytv="yt-dlp -f bestvideo+bestaudio/best -P ~/Videos/_unsorted"
 # YouTube playlist music
 alias ytm-pls="ytm bc --ytdl-raw-options=yes-playlist="
 
@@ -140,7 +139,7 @@ ytp() {
     local p=("${(ps: :)proxies[`shuf -i1-${#proxies} -n1`]}")
     echo -n "\nTrying with ${p[@]}\n"
     #mpv --ytdl-format="[height<=360]" --ytdl-raw-options=proxy="$p" $1 \
-    #yt -f 243+249 --proxy "$p" https://www.youtube.com/watch?v=$1 \
+    #yt-dlp -f 243+249 --proxy "$p" https://www.youtube.com/watch?v=$1 \
     ytf --proxy "${p[2]}" "$@" \
     && break
   done
