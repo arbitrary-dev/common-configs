@@ -45,9 +45,15 @@ ytw() {
       -p)
         local proxy+="proxy=[$2]"
         shift ;;
+      *[0-9][0-9]:[0-9][0-9])
+        args+=( --start=$1 ) ;;
       *)
-        if [[ "$1" =~ ^[A-Za-z0-9_-]{11}$ ]]; then
+        if [[ "$1" =~ ^[A-Za-z0-9]{12}$ ]]; then
+          args+=("http://bitchute.com/video/$1")
+        elif [[ "$1" =~ ^[A-Za-z0-9_-]{11}$ ]]; then
           args+=("http://youtu.be/$1")
+        elif [[ -f "$1" ]]; then
+          args+=( --playlist="$1" )
         else
           args+=("$1")
         fi ;;
