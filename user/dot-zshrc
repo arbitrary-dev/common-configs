@@ -33,11 +33,9 @@ alias ytm-pls="ytm bc --ytdl-raw-options=yes-playlist="
 ytw() {
   local format="worstvideo[height>=240]+worstaudio[language=?en]/worst[height>=240]/hls-655/0/original"
 
-  local args=()
+  local args=( --fullscreen --panscan=1 )
   while (( $# )); do
     case $1 in
-      -fs)
-        args+=(--fullscreen) ;;
       -f)
         format="$2"
         shift ;;
