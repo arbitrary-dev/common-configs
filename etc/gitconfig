@@ -1,6 +1,5 @@
 [core]
 	editor = vim
-	pager = "less -iSXFR"
 [push]
 	default = simple
 [merge]
@@ -9,8 +8,6 @@
 [mergetool]
 	keepBackup = false
 	prompt = false
-[pager]
-	status = true
 [diff]
 	noprefix = true
 [color "interactive"]

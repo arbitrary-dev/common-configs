@@ -50,7 +50,7 @@ setup-ccache() {
 }
 
 export EDITOR="vim"
-export LESS="-iSXFR"
+export LESS="-iSXFR -x4"
 
 sr() {
   # Is it needed?

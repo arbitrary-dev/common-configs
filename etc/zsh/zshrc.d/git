@@ -67,15 +67,15 @@ gbl() {
   local out=$(git blame HEAD --abbrev=6 -s -L ${@:1})
   local n=$( \
     echo $out | \
-    \sed -nEe "s/[^)]*) ( *)[^ ].*/\1/p" | \
+    sed -nEe "s/[^)]*) ( *)[^ ].*/\1/p" | \
     awk '{print length}' | \
     sort -g | \
     head -n1
   )
 
   echo $out \
-  | \sed -Ee "s_^([0-9a-z]+) ( *[0-9]+)\) ( {0,$n})_${esc}[32m\1 ${esc}[34m\2${esc}[0m _" \
-  | \less -iSXFR
+  | sed -Ee "s_^([0-9a-z]+) ( *[0-9]+)\) ( {0,$n})_${esc}[32m\1 ${esc}[34m\2${esc}[0m _" \
+  | less
 }
 
 alias ga="git add"
