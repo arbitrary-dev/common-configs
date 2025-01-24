@@ -34,6 +34,7 @@ unsetopt beep extendedglob nomatch notify
 # End of lines configured by zsh-newuser-install
 
 export PS1='%1~ %(!.#.$)%b%f '
+export GPG_TTY=`tty`
 
 # Enables custom Vim mappings on <C-q> & <C-s>
 stty -ixon
@@ -104,18 +105,18 @@ alias erm="sudo emerge --deselect"
 elog() {
   sudo sh -c '
     h=$(( `tput lines` - 4 ))
-    log=/var/tmp/portage/*/'$1'*/temp/build.log
-    [ ! -f $log ] && log=/opt/.portage_no-tmpfs/portage/*/'$1'*/temp/build.log
-    [ -f $log ] && >&2 echo $log || exit 1
-    log=`ls $log`
-    tail -fn$h $log \
-    | sed -E -e "s/^ *\"?i686-pc-linux-gnu-([^ ]+)\"? .*-o \"?([^ &:\"]+).*/\1 ... -o \2/" \
-             -e "s!^ *\"?(\[[^]]+]|[^ \"]+)\"? [^.]{3}.+ -o ([^ ]+\.o)( .*|)\$!\1 ../\2!" \
-             -e "s/^( \* |>>> | *)\"?(\[[^]]+]|[^ \"]+)\"? [^.]{3}.+ (\"?[^ ]+).*$/\1\2 ... \3/" \
-             -e "s!^/[^ ]+/([^/ ]+) !\1 !" \
-             -e "s!${log%%/temp/*}(/work(/build|/'$1'[^/]+|)|)!..!g" \
-             -e "s/\.\.\. \.\./../" \
-             -e "/^make\\b|^$/d"
+    log=( /var/tmp/portage/*/'$1'*/temp/build.log )
+    [ ! -f "$log" ] && log=( /opt/.portage_no-tmpfs/portage/*/'$1'*/temp/build.log )
+    [ -f "$log" ] && >&2 echo "$log" || exit 1
+    tail -fn$h "$log" \
+	| sed -E -e "s_^(\[[^]]+]) .+ -o [^ ]+/([^/ ]+\.o\b).*_\1 \2_"
+    #| sed -E -e "s/^ *\"?i686-pc-linux-gnu-([^ ]+)\"? .*-o \"?([^ &:\"]+).*/\1 ... -o \2/" \
+    #         -e "s!^ *\"?(\[[^]]+]|[^ \"]+)\"? [^.]{3}.+ -o ([^ ]+\.o)( .*|)\$!\1 ../\2!" \
+    #         -e "s/^( \* |>>> | *)\"?(\[[^]]+]|[^ \"]+)\"? [^.]{3}.+ (\"?[^ ]+).*$/\1\2 ... \3/" \
+    #         -e "s!^/[^ ]+/([^/ ]+) !\1 !" \
+    #         -e "s!${log%%/temp/*}(/work(/build|/'$1'[^/]+|)|)!..!g" \
+    #         -e "s/\.\.\. \.\./../" \
+    #         -e "/^make\\b|^$/d"
   '
 }
 
@@ -177,9 +178,6 @@ alias poff="loginctl poweroff"
 alias rbt="loginctl reboot"
 alias susp="loginctl suspend-then-hibernate"
 
-alias df="df -h"
-alias du="du -h"
-
 setup-distcc() {
   [[ $PATH != *distcc* ]] \
   && export PATH="/usr/lib/distcc/bin:${PATH}"
@@ -209,10 +207,21 @@ dc() { date --date "$*"; }
 alias epoch-seconds="date +%s"
 
 backup() {
-  local date=`date +%Y-%m-%d`
-  local name=`basename ${*[-1]}`
-  7z a -mhe=on -mhc=on -m0=lzma2 -mx=9 -ms=128f512m -v4g -p \
-    $name-$date.7z $*
+	local date=`date +%Y-%m-%d`
+	local name
+
+	if [[ -f "$1" || -d "$1" ]]; then
+		name=`basename $1`
+	else
+		name="$1"
+		shift
+	fi
+
+	7z a -mhe=on -mhc=on -m0=lzma2 -mx=9 -ms=128f512m -v4g -p \
+		${name}_${date}.7z $*
+
+	[ ! -f ${name}_${date}.7z.002 ] \
+	&& mv ${name}_${date}.7z{.001,}
 }
 
 x() { sed -n $1p $2; }
@@ -235,7 +244,7 @@ my-sdiff() {
   | less
 }
 
-alias ccache-stats="CCACHE_DIR=/home/.ccache watch -d -n 31 ccache --show-stats"
+alias ccache-stats="CCACHE_DIR=/var/cache/ccache watch -d -n 31 ccache --show-stats"
 
 ccache-enable() {
   export PATH="/usr/lib/ccache/bin${PATH:+:}$PATH"

@@ -1,4 +1,3 @@
---require 'lsp-configs'
 --require 'plugins'
 -- TODO require 'highlights'
 
@@ -13,17 +12,19 @@ opt.laststatus = 1 -- show statusline only if there are at least two windows
 opt.ignorecase = true
 opt.smartcase = true
 
-opt.expandtab = true
-opt.tabstop = 2
-opt.shiftwidth = 2
+--opt.expandtab = true
+opt.tabstop     = 4
+opt.shiftwidth  = 4
+opt.softtabstop = 4
 
 -- Prevents opening of the folds during }{ navigation
 -- https://github.com/vim/vim/issues/7134
 opt.foldopen:remove{'block'}
 
-opt.foldmethod = 'expr'
-opt.foldexpr = 'nvim_treesitter#foldexpr()'
-opt.foldenable = false
+opt.foldmethod = 'indent'
+--opt.foldmethod = 'expr'
+--opt.foldexpr = 'nvim_treesitter#foldexpr()'
+--opt.foldenable = false
 
 --[[
 require('telescope').setup({
@@ -42,18 +43,18 @@ function hi(group, val)
   vim.api.nvim_set_hl(0, group, val)
 end
 
-hi('Comment', {ctermfg='darkgray'})
+hi('Comment', {fg='darkgray'})
 hi('Error', {ctermfg='black', ctermbg='red'})
 hi('ErrorMsg', {link='Error'})
 hi('ModeMsg', {ctermfg='black', ctermbg='red'})
 hi('NonText', {link='LineNr'})
 hi('Pmenu', {ctermfg=253, ctermbg=236})
 hi('PmenuSel', {ctermfg='black', ctermbg='darkred'})
-hi('LineNr', {ctermfg='darkgray'})
+hi('LineNr', {fg='darkgray'})
 hi('Folded', {link='Comment'})
 hi('Search', {reverse=true})
 hi('Todo', {ctermfg='black', ctermbg='yellow'})
-hi('MatchParen', {ctermbg=88})
+hi('MatchParen', {bg=darkcyan})
 
 hi('LspCodeLens', {ctermfg=88})
 hi('LspCodeLensSeparator', {ctermfg=52})
@@ -75,6 +76,8 @@ hi('scalaUnimplemented', {link='Todo'})
 
 hi('@lsp.type.class', {link='NONE'})
 hi('@lsp.type.namespace', {link='NONE'})
+
+vim.cmd.match('errorMsg', [[/\s\+$/]])
 
 opt.cursorline = true
 opt.cursorlineopt = 'number'
@@ -127,9 +130,7 @@ end
 vim.opt.rtp:prepend(lazypath)
 require('lazy').setup('plugins')
 
-local lsp = require('lspconfig')
-
-lsp.pylsp.setup{}
+require 'lsp-configs'
 
 -- Global mappings.
 -- See `:help vim.diagnostic.*` for documentation on any of the below functions

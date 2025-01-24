@@ -23,12 +23,18 @@ alias -s h=vim
 alias -s cpp=vim
 alias -s hpp=vim
 
-alias -s png="feh -F"
-alias -s jpg="feh -F"
-alias -s JPG="feh -F"
-alias -s jpeg="feh -F"
+_feh-bg() { feh "$1" &; }
+alias -s png="feh-bg"
+alias -s jpg="feh-bg"
+alias -s JPG="feh-bg"
+alias -s jpeg="feh-bg"
+alias -s webp="feh-bg"
 
 alias -s log=less
 alias -s pdf="zathura --fork"
 alias -s epub="zathura --fork"
 alias -s html=xdg-open
+alias -s xls=gnumeric
+alias -s xlsx=gnumeric
+
+alias -s doc="antiword"

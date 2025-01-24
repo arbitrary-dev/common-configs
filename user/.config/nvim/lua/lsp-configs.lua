@@ -1,10 +1,29 @@
 --require "nvim-metals"
 
+local cfg = require "lspconfig"
+
+cfg.pylsp.setup{}
+
 --[[
-local lspcfg = require "lspconfig"
 vim.lsp.set_log_level("debug")
-lspcfg.java_language_server.setup { cmd = {"java-language-server"} }
+cfg.java_language_server.setup { cmd = {"java-language-server"} }
 ]]
+
+cfg.hls.setup{
+	filetypes = { 'haskell', 'lhaskell', 'cabal' },
+	settings = {
+		haskell = {
+			cabalFormattingProvider = "cabalfmt",
+			formattingProvider = "stylish-haskell"
+		}
+	}
+}
+
+if true then
+	local capabilities = vim.lsp.protocol.make_client_capabilities()
+	capabilities.textDocument.completion.completionItem.snippetSupport = true
+	cfg.html.setup { capabilities = capabilities }
+end
 
 ----------------------------------
 -- MISC --------------------------

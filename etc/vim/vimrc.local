@@ -15,7 +15,7 @@ endif
 
 set number
 set nowrap
-set smartindent expandtab sw=2 ts=2 sts=2
+set smartindent noexpandtab sw=4 ts=4 sts=4
 set clipboard=unnamedplus
 set backspace=indent,eol,start
 set textwidth=80 colorcolumn=80
@@ -35,6 +35,8 @@ set hlsearch ignorecase smartcase
 au FileType scala setlocal tw=110 cc=110
 " nosmartindent for python, cause it messes up with shifting #* lines
 au FileType python setlocal fdm=indent nosi
+au FileType cabal setlocal et ts=4 sw=4 sts=4
+au FileType haskell setlocal et ts=2 sw=2 sts=2
 
 set fdc=0
 let g:xml_syntax_folding=1
@@ -59,7 +61,7 @@ map =jd :%!python3 -c '
 map =jl :%!python3 -c 'import json,sys; print(json.loads(sys.stdin.read()))'<CR>
 
 nnoremap <silent> <leader>. /^[<\|=>]\{7}.*$<CR>
-nnoremap <silent> <leader><leader> :nohlsearch<CR>
+nnoremap <silent> <leader><leader> :set hlsearch!<CR>
 nnoremap <silent> <leader>dt :diffthis<CR>
 nnoremap <silent> <leader>do :diffoff<CR>
 nnoremap <silent> <leader>dp :diffput<CR>

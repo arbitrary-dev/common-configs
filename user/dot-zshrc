@@ -17,7 +17,7 @@ alias ytf="yt-dlp --list-formats"
 # ...you can now simply use --download-sections "*93-111" to download
 # the part between 93 seconds and 111 seconds. For more accurate cutting,
 # you can also use --force-keyframes-at-cuts
-alias yta="yt-dlp -f bestaudio -P \$MUS/_unsorted"
+alias yta="yt-dlp -f bestaudio -P \${MUS:-~/Music}/_unsorted"
 
 # Download YT video in best quality
 alias ytv="yt-dlp -f bestvideo+bestaudio/best -P ~/Videos/_unsorted"
@@ -33,7 +33,7 @@ alias ytm-pls="ytm bc --ytdl-raw-options=yes-playlist="
 ytw() {
   local format="worstvideo[height>=240]+worstaudio[language=?en]/worst[height>=240]/hls-655/0/original"
 
-  local args=( --fullscreen --panscan=1 )
+  local args=()
   while (( $# )); do
     case $1 in
       -f)
@@ -70,7 +70,7 @@ ytw() {
     echo $YTW_COOKIES | basenc --decode --base64 | gunzip > "$c"
   fi
 
-  if (( ! ${#args} )); then
+  if (( ! $#args )); then
     if [ -v list ]; then
       args+=(
         --yes-playlist --playlist-reverse
@@ -93,7 +93,8 @@ ytw() {
     gnome-session-inhibit --inhibit idle:suspend \
       mpv --ytdl-format="$format" "${=args[@]}"
   else
-    mpv --fullscreen --msg-level="ffmpeg=no,EDL=no" --ytdl-format="$format" "${=args[@]}"
+    args+=( --fullscreen --panscan=1 )
+    mpv --msg-level="ffmpeg=no,EDL=no" --ytdl-format="$format" "${=args[@]}"
   fi
 }
 
@@ -111,6 +112,7 @@ ytm() {
       w)  local format="worstaudio/worst" ;;
       bc) local bigcache ;;
       ns) local no_shuffle ;;
+	  l)  args+=( --loop-playlist ) ;;
       *)  if [[ "$1" =~ ^[a-zA-Z0-9_-]{11}$ ]]; then
             args+=("http://youtu.be/$1")
           else
@@ -159,7 +161,9 @@ yts() {
 alias at="rg --pcre2 '(((//|/?\*|#) )|\*\*|)\b(TODO|FIXME)\b(?!(:|.*INT-\d)).*$'"
 
 alias feh="feh --auto-rotate --geometry 640x480 --image-bg black -Z -."
+alias lp="lp -o collate=true -o outputorder=reverse"
 alias lp-a4="lp -o fit-to-page -o PageSize=A4 -o PageRegion=A4 -o PaperDimension=A4 -o ImageableArea=A4"
+alias lp-gray="lp -o Ink=MONO"
 alias sway-list-windows="swaymsg -t get_tree | grep app_id"
 alias nf=neofetch
 mic() { ffmpeg -y -f pulse -ac 1 -i default /tmp/mic-`date +%Y-%m-%d-%H%M%S`.mp3; }
@@ -788,8 +792,8 @@ cal() {
 }
 
 # sudo docker tag quay.io/jupyter/scipy-notebook:2024-02-13 jupyter-scipy
-alias jpy-scipy='sudo docker run -it --rm -p 8888:8888 -v `pwd`:/home/jovyan/work jupyter-scipy'
-alias jpy-r='sudo docker run -it --rm -p 8888:8888 -v `pwd`:/home/jovyan/work jupyter-r'
+alias jpy-scipy='sudo docker run -it --rm -p 8888:8888 -v "`pwd`":/home/jovyan/work jupyter-scipy'
+alias jpy-r='sudo docker run -it --rm -p 8888:8888 -v "`pwd`":/home/jovyan/work jupyter-r'
 
 # MPV Android
 mpva() {
@@ -835,4 +839,13 @@ fd24() {
            -e 's_&lt;/?em&gt;_*_g' \
            -e 's_&lt;a href=&#34;([^&]+)&#34;&gt;([^&]+)&lt;/a&gt;_[\1](\2)_g' \
            -e 's_&[^;]+;(/?(p|li|ul)&gt;|)__g'
+}
+
+txt() {
+	case $1 in
+		*.pdf)  mutool convert -F text $1 ;;
+		*.doc)  antiword $1 ;;
+		*.docx) docx2txt $1 - ;;
+		#*.docx) pandas -o plain $1 ;;
+	esac
 }
