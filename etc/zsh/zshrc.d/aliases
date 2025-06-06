@@ -23,12 +23,12 @@ alias -s h=vim
 alias -s cpp=vim
 alias -s hpp=vim
 
-_feh-bg() { feh "$1" &; }
-alias -s png="feh-bg"
-alias -s jpg="feh-bg"
-alias -s JPG="feh-bg"
-alias -s jpeg="feh-bg"
-alias -s webp="feh-bg"
+_imv-bg() { imv-dir "$1" &; }
+alias -s png="_imv-bg"
+alias -s jpg="_imv-bg"
+alias -s JPG="_imv-bg"
+alias -s jpeg="_imv-bg"
+alias -s webp="_imv-bg"
 
 alias -s pdf="zathura --fork"
 alias -s epub="zathura --fork"

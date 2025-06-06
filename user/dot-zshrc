@@ -882,3 +882,19 @@ txt() {
 		#*.docx) pandas -o plain $1 ;;
 	esac
 }
+
+lsix() {
+	local fs=$(
+		for f in $(ls $1); do echo ${f%.*} $1/$f; done \
+		| awk -v len=18 '
+		{
+			if (length($1) > len)
+				printf " -label " substr($1, 1, 8) "…" \
+					substr($1, length($1)-7, length($1)) " " $2
+			else printf " -label " $1 " " $2
+		}'
+	)
+
+	montage -tile 14x -background black -font DejaVu-Sans-Mono-Book -fill white ${=fs} webp:- \
+	| imv -
+}
