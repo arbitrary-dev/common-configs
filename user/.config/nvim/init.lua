@@ -38,6 +38,7 @@ require('telescope').setup({
 --vim.api.nvim_create_autocmd('FileType', { pattern = 'TelescopeResults', command = [[setlocal nofoldenable]] })
 
 -- HIGHLIGHTS
+-- https://codeyarns.com/tech/2011-07-29-vim-chart-of-color-names.html
 
 function hi(group, val)
   vim.api.nvim_set_hl(0, group, val)
@@ -48,8 +49,9 @@ hi('Error', {ctermfg='black', ctermbg='red'})
 hi('ErrorMsg', {link='Error'})
 hi('ModeMsg', {ctermfg='black', ctermbg='red'})
 hi('NonText', {link='LineNr'})
-hi('Pmenu', {ctermfg=253, ctermbg=236})
-hi('PmenuSel', {ctermfg='black', ctermbg='darkred'})
+hi('Pmenu', {ctermfg=253, bg='SteelBlue4'})
+hi('PmenuSel', {ctermfg='black', bg='SteelBlue3'})
+hi('NormalFloat', {ctermfg=253, bg='SteelBlue4'})
 hi('LineNr', {fg='darkgray'})
 hi('Folded', {link='Comment'})
 hi('Search', {reverse=true})
@@ -81,7 +83,7 @@ vim.cmd.match('errorMsg', [[/\s\+$/]])
 
 opt.cursorline = true
 opt.cursorlineopt = 'number'
-hi('CursorLineNr', {ctermfg='black', ctermbg='red'})
+hi('CursorLineNr', {fg='black', bg='NvimLightGrey2'})
 hi('Visual', {link='CursorLineNr'})
 
 opt.fillchars = 'vert: '
