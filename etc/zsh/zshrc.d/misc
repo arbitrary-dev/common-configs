@@ -212,6 +212,30 @@ function = {
 			   -e "s/%/*100/g"
 	`
 }
+
+function / {
+	local where=()
+	while [[ -d $1 ]]; do
+		where+=("$1")
+		shift
+	done
+	where="${where[@]}"
+
+	local q=()
+	for a in "$@"; do
+		local cs="i"
+		[[ "$a" =~ [A-Z] ]] && cs=
+		if [[ "$a" =~ '\*' ]]; then
+			q+=("-${cs}name $a")
+		else
+			q+=("-${cs}name *$a*")
+		fi
+	done
+	q="${(j: -or :)q[@]}"
+
+	find $=where $=q | sed 's_^./__' | sort
+}
+
 dc() { date --date "$*"; }
 
 alias epoch-seconds="date +%s"
