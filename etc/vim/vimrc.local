@@ -134,7 +134,7 @@ filetype plugin indent on
 " Disable bold style
 set t_md=
 
-exe 'hi ColorColumn ctermfg=black ctermbg=' . g:hcolordark
+exe 'hi ColorColumn ctermbg=' . g:hcolordark
 hi clear Search
 hi Search cterm=inverse
 hi clear IncSearch

@@ -41,3 +41,5 @@ endif
 if filereadable(expand("~/.vim/vimrc.local"))
   source(expand("~/.vim/vimrc.local"))
 endif
+
+set noet cc= fdm=indent

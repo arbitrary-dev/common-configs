@@ -128,6 +128,7 @@ ytm() {
   && format=`sed -E "s/\w+/\0[filesize<14M]/g" <<< "$format"`
 
   mpv --no-video \
+      --title='${chapter-metadata/title:${media-title}}' \
       --ytdl-format=$format \
       ${bigcache---demuxer-max-bytes=5MiB} \
       ${bigcache+--demuxer-max-bytes=150MiB} \
@@ -163,7 +164,10 @@ yts() {
 alias at="rg --pcre2 '(((//|/?\*|#) )|\*\*|)\b(TODO|FIXME)\b(?!(:|.*INT-\d)).*$'"
 
 alias feh="feh --auto-rotate --geometry 640x480 --image-bg black -Z -."
-alias lp="lp -o collate=true -o outputorder=reverse"
+alias lp="lp -o 'collate=true outputorder=reverse'"
+alias lp-2side="lp -o sides=two-sided-long-edge"
+alias lp-odd=" lp -o 'page-set=odd  outputorder=normal'"
+alias lp-even="lp -o 'page-set=even outputorder=normal orientation-requested=6'"
 alias lp-a4="lp -o fit-to-page -o PageSize=A4 -o PageRegion=A4 -o PaperDimension=A4 -o ImageableArea=A4"
 alias lp-gray="lp -o Ink=MONO"
 alias sway-list-windows="swaymsg -t get_tree | grep app_id"
@@ -428,7 +432,7 @@ mnt() {
   local dev=$1
 
   if [[ ! "$dev" ]]; then
-    local ds=(`ls /dev/sd?? 2>/dev/null`)
+    local ds=(`ls --color=never /dev/sd?? 2>/dev/null`)
     if (( ! ${#ds} )); then
       echo "No devices available!"
       return 1
@@ -448,7 +452,7 @@ mnt() {
   elif [[ "$dev" = /dev/* && -e "$dev" ]]; then
     devs=("$dev")
   else
-    devs=(`sudo lsblk -lo path,label -e 259 | grep $dev | cut -d\  -f1`)
+    devs=($(sudo sh -c "lsblk -lo path,label -e 259 | grep '$dev' | cut -d\  -f1"))
   fi
 
   if [[ -z "$devs" ]]; then

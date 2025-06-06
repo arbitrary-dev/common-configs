@@ -30,11 +30,16 @@ alias -s JPG="feh-bg"
 alias -s jpeg="feh-bg"
 alias -s webp="feh-bg"
 
-alias -s log=less
 alias -s pdf="zathura --fork"
 alias -s epub="zathura --fork"
-alias -s html=xdg-open
+alias -s djvu="zathura --fork"
+
 alias -s xls=gnumeric
 alias -s xlsx=gnumeric
 
+alias -s log=less
+alias -s html=xdg-open
+
 alias -s doc="antiword"
+alias -s docx="pandoc -t plain"
+alias -s rtf="pandoc -t plain"

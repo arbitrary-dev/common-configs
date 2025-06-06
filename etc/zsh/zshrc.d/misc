@@ -173,6 +173,7 @@ alias rn="perl-rename"
 alias xb="sudo xb"
 alias xs="xargs -I{}"
 alias btr="sudo bluetooth-restart"
+alias ls="ls --color --human-readable --group-directories-first"
 
 alias poff="loginctl poweroff"
 alias rbt="loginctl reboot"
