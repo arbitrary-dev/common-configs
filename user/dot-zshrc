@@ -6,6 +6,9 @@ fi
 
 export PS1="%B%F{green}$PS1"
 
+export DOCS=${DOCS:-~/Documents}
+export MUS=${MUS:-~/Music}
+
 alias abc="echo {A..Z}"
 alias hanako-fm="mpv https://musicbird.leanstream.co/JCB069-MP3"
 
@@ -237,34 +240,33 @@ ls-files() {
   find $* -type f | sed -E "s!($joined)/!!" | sort
 }
 
-export TODO_FILE="$MY_DOCS/_misc/todo.txt"
 todo() {
-  local file="${TODO_FILE%.*}"
+  local file="$DOCS/todo"
   (( $# )) && file+="-`join_with - $*`"
-  file+=".${TODO_FILE##*.}"
+  file+=".txt"
   vim "$file"
 }
 # Add todo
 t() {
   local what
   (( $# )) && what="1i $*" || what="0r /dev/stdin"
-  sed -i "$what" "$TODO_FILE"
+  local file="$DOCS/todo.txt"
+  sed -i "$what" "$file"
   (( ! $? )) && echo "Todo added!"
 }
 # Todo expenses
 te() { t `date +%-m/%d` $@ }
 
-export NOTES_FILE="$MY_DOCS/_misc/notes.md"
-alias notes='vim "$NOTES_FILE"'
+alias notes='vim "$DOCS/notes.md"'
 n() {
   (
     echo -e "\n---\n"
     (( $# )) && echo "$@" || cat -
-  ) >>"$NOTES_FILE"
+  ) >>"$DOCS/notes.md"
   (( ! $? )) && echo "Noted!"
 }
 
-recipes() { vim $MY_DOCS/recipes/README.md; }
+recipes() { vim $DOCS/recipes/README.md; }
 
 alias wine32="WINEARCH=win32 WINEPREFIX=~/.wine32 wine"
 alias winecfg32="WINEARCH=win32 WINEPREFIX=~/.wine32 winecfg"
