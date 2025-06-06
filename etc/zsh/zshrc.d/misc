@@ -201,7 +201,16 @@ rs() {
   disown
 }
 
-bc() { command bc -l <<< "$*"; }
+function = {
+	printf "= "
+	command bc -l <<< `
+		echo "$@" \
+		| sed -Ee "s/,/./g" \
+			   -e "s/ //g"  \
+			   -e "s/([0-9.]+)k/(\1*1000)/g" \
+			   -e "s/%/*100/g"
+	`
+}
 dc() { date --date "$*"; }
 
 alias epoch-seconds="date +%s"

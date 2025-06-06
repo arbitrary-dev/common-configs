@@ -12,6 +12,8 @@ alias hanako-fm="mpv https://musicbird.leanstream.co/JCB069-MP3"
 # List available formats for YT video
 alias ytf="yt-dlp --list-formats"
 
+alias yt="yt-dlp -P $DWNL"
+
 ## Download YT audio in best quality
 #
 # ...you can now simply use --download-sections "*93-111" to download
@@ -20,7 +22,7 @@ alias ytf="yt-dlp --list-formats"
 alias yta="yt-dlp -f bestaudio -P \${MUS:-~/Music}/_unsorted"
 
 # Download YT video in best quality
-alias ytv="yt-dlp -f bestvideo+bestaudio/best -P ~/Videos/_unsorted"
+alias ytv="yt-dlp -f bestvideo+bestaudio/best -P ${VIDEOS:-~/Videos/_unsorted}"
 # YouTube playlist music
 alias ytm-pls="ytm bc --ytdl-raw-options=yes-playlist="
 
@@ -61,7 +63,7 @@ ytw() {
     shift
   done
 
-  local c="/tmp/.ytw-cookies"
+  local c="${TMPDIR:-/tmp}/.ytw-cookies"
   if [ ! -f "$c" ]; then
     if [ -z "$YTW_COOKIES" ]; then
       echo "Please set YTW_COOKIES!"
@@ -165,7 +167,6 @@ alias lp="lp -o collate=true -o outputorder=reverse"
 alias lp-a4="lp -o fit-to-page -o PageSize=A4 -o PageRegion=A4 -o PaperDimension=A4 -o ImageableArea=A4"
 alias lp-gray="lp -o Ink=MONO"
 alias sway-list-windows="swaymsg -t get_tree | grep app_id"
-alias nf=neofetch
 mic() { ffmpeg -y -f pulse -ac 1 -i default /tmp/mic-`date +%Y-%m-%d-%H%M%S`.mp3; }
 
 alias m="memo"
@@ -801,44 +802,72 @@ mpva() {
   am start -a android.intent.action.VIEW -d file://"$file" -t video/* is.xyz.mpv
 }
 
-# List all #FOSDEM24 events for a date
-fd24-all() {
-  local D=${1-`date +%Y-%m-%d`}
-  local Q='.schedule.day|map(select(.+@date == "'$D'"))
-    |.[].room[].event[]
-    |(.start + " [" + .room + "] " + .title + " " + .duration + "\n")
-  '
-  yq -r $Q $DWNL/fossdem24.xml \
-  | sed -E -e 's/ \([^\)]+\)]/]/' \
-           -e "s/&#39;/'/g" \
-           -e 's/&lt;li&gt;/- /g' \
-           -e 's_&lt;/?em&gt;_*_g' \
-           -e 's_&lt;a href=&#34;([^&]+)&#34;&gt;([^&]+)&lt;/a&gt;_[\1](\2)_g' \
-           -e 's_&[^;]+;(/?(p|li|ul)&gt;|)__g' \
-  | sort \
-  | less
+# List #FOSDEM25 events.
+fd25() {
+	local D=`date +%Y-%m-%d`
+	local T="`date +%H`:.."
+	local grep="cat -"
+
+	if [[ $D < 2025-02-01 ]]; then
+		D="2025-02-01"
+	elif [[ $D > 2025-02-02 ]]; then
+		D="2025-02-02"
+	elif [[ -n "$1" && "$1" != "all" ]]; then
+		grep="grep -iE --color=always $1"
+	elif [[ $T > 09 && $T < 19 ]]; then
+		local C="-32"
+		[[ "$1" == "all" ]] && C="-z"
+		grep="grep $C --color=always $T"
+	fi
+
+	local Q='.schedule.day|map(select(.+@date == "'$D'"))
+		|.[].room[].event[]
+		|(.start + " [" + .room + "] " + .title + " " + .duration +
+			" (" + .track.+@slug + ")\n")'
+
+	yq -r $Q $DWNL/fossdem25.xml \
+	| sed -E -e 's/ \([^\)]+\)]/]/' \
+	         -e "s/&#39;/'/g" \
+	         -e 's/&lt;li&gt;/- /g' \
+	         -e 's_&lt;/?em&gt;_*_g' \
+	         -e 's_&lt;a href=&#34;([^&]+)&#34;&gt;([^&]+)&lt;/a&gt;_[\1](\2)_g' \
+	         -e 's_&[^;]+;(/?(p|li|ul)&gt;|)__g' \
+	| sort \
+	| ${=grep} \
+	| less
 }
 
-# Show FOSDEM24 event/-s for a date, room and time
-fd24() {
-  local D=$1
-  local R=$2
-  local T=$3
-  local Q='
-    .schedule.day|map(select(.+@date == "'$D'"))|.[]
-    .room|map(select(.+@name|contains("'$R'")))|.[]
-    .event|map(select(.start|contains("'$T'")))|.[]
-    |(
-      .start + " [" + .room + "] " + .title + " " + .duration + "\n\n"
-      + .abstract + "\n\n\n"
-    )
-  '
-  yq -r "$Q" $DWNL/fossdem24.xml \
-  | sed -E -e "s/&#39;/'/g" \
-           -e 's/&lt;li&gt;/- /g' \
-           -e 's_&lt;/?em&gt;_*_g' \
-           -e 's_&lt;a href=&#34;([^&]+)&#34;&gt;([^&]+)&lt;/a&gt;_[\1](\2)_g' \
-           -e 's_&[^;]+;(/?(p|li|ul)&gt;|)__g'
+# Show #FOSDEM25 event/-s details for a date, room and time.
+fd25-more() {
+	local TR=$1
+	local D=`date +%Y-%m-%d`
+	local TM="`date +%H`:.."
+
+	local grep="cat -"
+	if [[ $TM > 08 && $TM < 19 ]]; then
+		grep="grep -z --color=always $TM"
+	fi
+
+	local Q='
+		.schedule.day|map(select(.+@date == "'$D'"))|.[]
+		.room[]
+		.event|map(select(
+			(.track.+content + .track.+@slug)|match("(?i)'$TR'")
+		))|.[]|(
+			.start + " [" + .room + "] " + .title + " " + .duration +
+			" (" + .track.+content + ")\n" +
+			([.persons.person|(.+content? // .[].+content)]|map("- "+.)|join("\n")) + "\n\n"
+			+ .abstract + "\n\n\n"
+		)'
+
+	yq -r "$Q" $DWNL/fossdem25.xml \
+	| sed -E -e "s/&#39;/'/g" \
+		     -e 's/&lt;li&gt;/- /g' \
+		     -e 's_&lt;/?em&gt;_*_g' \
+		     -e 's_&lt;a href=&#34;([^&]+)&#34;&gt;([^&]+)&lt;/a&gt;_[\1](\2)_g' \
+		     -e 's_&[^;]+;(/?(p|li|ul)&gt;|)__g' \
+	| $=grep \
+	| LESS='-R' less
 }
 
 txt() {
