@@ -43,9 +43,14 @@ if [ -n "$TERMUX" ]; then
 	echo
 
 	echo "Stowing .gitconfig ..."
-	[ -f $HOME/.gitconfig ] && mv $HOME/.gitconfig etc/gitconfig
-	rm -rf $HOME/.gitconfig
-	ln -sv $PWD/etc/gitconfig $HOME/.gitconfig
+	if [ -f $HOME/.gitconfig ]; then
+		if [ ! -L $HOME/.gitconfig ]; then
+			mv -v $HOME/.gitconfig etc/gitconfig
+			ln -sv $PWD/etc/gitconfig $HOME/.gitconfig
+		fi
+	else
+		ln -sv $PWD/etc/gitconfig $HOME/.gitconfig
+	fi
 	echo "Done!"
 	echo
 
