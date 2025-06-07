@@ -6,7 +6,7 @@ fi
 
 export PS1="%B%F{green}$PS1"
 
-export DOCS=${DOCS:-~/Documents}
+export DOCS=${DOCS:-~/Documents/_misc}
 export MUS=${MUS:-~/Music}
 
 alias abc="echo {A..Z}"
