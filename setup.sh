@@ -19,6 +19,7 @@ fi
 
 echo "Stowing $HOME..."
 mkdir -p $HOME/.vim
+mkdir -p $HOME/.gnupg
 stow --target $HOME user
 echo "Done!"
 echo
