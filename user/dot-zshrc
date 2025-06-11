@@ -25,7 +25,7 @@ alias yt="yt-dlp -P $DWNL"
 alias yta="yt-dlp -f bestaudio -P \${MUS:-~/Music}/_unsorted"
 
 # Download YT video in best quality
-alias ytv="yt-dlp -f bestvideo+bestaudio/best -P ${VIDEOS:-~/Videos/_unsorted}"
+alias ytv="yt-dlp -f bestvideo+bestaudio/best -P ${VID:-~/Videos}/_unsorted"
 # YouTube playlist music
 alias ytm-pls="ytm bc --ytdl-raw-options=yes-playlist="
 
